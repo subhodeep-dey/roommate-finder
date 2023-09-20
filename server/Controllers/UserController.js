@@ -154,7 +154,7 @@ export const UnFollowUser = async (req, res) => {
   }
 };
 
-// follow/unfollow - like/unlike a room (trying 2nd method - smaller version)
+// follow/unfollow - like/unlike a room (trying 2nd method - smaller version).
 export const likeRoom = async (req, res) => {
   const id = req.params.id;
   const { roomId } = req.body;
