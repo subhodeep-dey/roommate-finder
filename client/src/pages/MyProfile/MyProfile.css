@@ -1,0 +1,36 @@
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .rounded-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .rounded-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); 
+  }
+
+  .success-notification {
+    background-color: #28a745; /* Green */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+  }
+  
+  .error-notification {
+    background-color: #dc3545; /* Red */
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+  }  

@@ -1,0 +1,21 @@
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+  }
+  
+  .nav {
+    display: flex;
+    justify-content: left;
+  }
+  
+  .nav-link {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .nav-link:hover {
+    text-decoration: underline;
+  }
+  
