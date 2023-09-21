@@ -17,10 +17,10 @@ const postSchema = mongoose.Schema(
       type: Number,
       required: true
     },
-    year: {
+    year : {
       type: Number,
       required: false
-    },
+    },    
     habits: String,
     desc: String,
   },
