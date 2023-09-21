@@ -26,7 +26,7 @@ const UserSchema = mongoose.Schema(
         year : {
             type: Number,
             required: false
-        },                   // year of study
+        },                   // year of study.
         mobile : {
             type: Number,
             required: false
