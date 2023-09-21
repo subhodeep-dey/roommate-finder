@@ -1,4 +1,4 @@
-# Roommate Dhoondho.
+# Roommate Dhoondho
 Roommate Finder Web app in MERN stack
 <br>
 <b>Demo Link: </b> <a href="https://roommate-finder-client.vercel.app" target="_blank">roommate-finder-client.vercel.app</a>
