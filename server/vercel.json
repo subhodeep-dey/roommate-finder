@@ -3,7 +3,7 @@
     "builds": [
         { "src": "*.js", "use": "@vercel/node" }
     ],
-    "redirects": [
+    "rewrites": [
         { "source": "/(.*)", "destination": "/" }
     ],
     "headers": [
