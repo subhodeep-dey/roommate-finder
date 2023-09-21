@@ -13,13 +13,13 @@ const postSchema = mongoose.Schema(
       required: true
     },
     preferredBlock: String,
-    year: {
-      type: Number,
-      required: false
-    },
     phone: {
       type: Number,
       required: true
+    },
+    year: {
+      type: Number,
+      required: false
     },
     habits: String,
     desc: String,
