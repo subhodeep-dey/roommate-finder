@@ -18,6 +18,10 @@ const UserSchema = mongoose.Schema(
             type: String,
             required: false
         },
+        regnum: {
+            type: String,
+            required: false
+        },
         gender: String,
         rank : {
             type: Number,
