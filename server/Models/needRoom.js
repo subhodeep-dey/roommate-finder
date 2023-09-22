@@ -17,10 +17,7 @@ const postSchema = mongoose.Schema(
       type: Number,
       required: true
     },
-    year : {
-      type: Number,
-      required: false
-    },
+    year: String,
     habits: String,
     desc: String,
   },
