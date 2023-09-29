@@ -172,3 +172,22 @@ export const likeRoom = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+// like/unlike a roommate
+export const likeRoommate = async (req, res) => {
+  const id = req.params.id;
+  const { roommateId } = req.body;
+
+  try {
+    const user = await UserModel.findById(id);
+    if (!user.likesRoommate.includes(roommateId)) {
+      await user.updateOne({ $push: { likesRoommate: roommateId } });
+      res.status(200).json("Roommate liked");
+    } else {
+      await user.updateOne({ $pull: { likesRoommate: roommateId } });
+      res.status(200).json("Roommate Unliked");
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

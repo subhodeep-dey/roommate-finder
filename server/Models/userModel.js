@@ -44,6 +44,7 @@ const UserSchema = mongoose.Schema(
         about: String,
         followers: [],
         following: [],
+        likesRoommate: [],
         likesRoom: []
     },
     {timestamps: true}
