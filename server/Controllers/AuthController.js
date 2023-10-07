@@ -14,8 +14,8 @@ export const registerUser = async (req, res) => {
   try {
     const oldUser = await UserModel.findOne({ username });
     if (oldUser) return res.status(400).json({ message: "User already exists" });
-    const emailToken = crypto.randomBytes(64).toString("hex"); // Generate email token
-    newUser.emailToken = emailToken; // Save email token to the user object
+    const emailToken = crypto.randomBytes(64).toString("hex");
+    newUser.emailToken = emailToken;
     const user = await newUser.save();
     const token = jwt.sign(
       { username: user.username, id: user._id, emailToken: user.emailToken },
@@ -82,6 +82,48 @@ export const loginUser = async (req, res) => {
       }
     } else {
       res.status(404).json("User not found");
+    }
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+// Generate a new email token for password reset
+export const requestPasswordReset = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await UserModel.findOne({ username });
+
+    if (user) {
+      const emailToken = crypto.randomBytes(64).toString("hex");
+      user.emailToken = emailToken;
+      await user.save();
+
+      res.status(200).json({ message: "Email token for password reset sent to the user's email address." });
+    } else {
+      res.status(404).json("User not found");
+    }
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
+// Update password based on emailToken
+export const updatePassword = async (req, res) => {
+  const { username, password, emailToken } = req.body;
+  try {
+    const user = await UserModel.findOne({ username, emailToken });
+
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPass = await bcrypt.hash(password, salt);
+      user.password = hashedPass;
+      user.emailToken = null;
+      await user.save();
+
+      res.status(200).json({ message: "Password updated successfully." });
+    } else {
+      res.status(404).json("Invalid username or email token.");
     }
   } catch (err) {
     res.status(500).json(err.message);
