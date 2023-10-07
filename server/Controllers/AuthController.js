@@ -1,10 +1,11 @@
 import UserModel from "../Models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from 'crypto';
+import crypto from "crypto";
 
 // Registering a new User
 export const registerUser = async (req, res) => {
+  console.log(req.body);
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPass;
