@@ -42,6 +42,11 @@ const UserSchema = mongoose.Schema(
         profilePicture: String,
         coverPicture: String,
         about: String,
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+        emailToken: String,
         followers: [],
         following: [],
         likesRoommate: [],
