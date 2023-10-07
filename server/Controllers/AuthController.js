@@ -2,6 +2,8 @@ import UserModel from "../Models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { sendVerificationMail } from "../utils/sendVerificationMail.js";
+import { sendPasswordResetMail } from "../utils/sendPasswordResetMail.js";
 
 // Registering a new User
 export const registerUser = async (req, res) => {
@@ -22,6 +24,7 @@ export const registerUser = async (req, res) => {
       process.env.JWTKEY,
       { expiresIn: "1h" }
     );
+    sendVerificationMail(user);
     res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -56,6 +59,32 @@ export const verifyEmail = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
+
+// Resend Verification Email
+export const resendVerificationEmail = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await UserModel.findOne({ username });
+
+    if (user) {
+      if (user.isVerified) {
+        return res.status(400).json({ message: "Email is already verified." });
+      }
+
+      const emailToken = crypto.randomBytes(64).toString("hex");
+      user.emailToken = emailToken;
+      await user.save();
+
+      sendVerificationMail(user);
+      res.status(200).json({ message: "Verification email resent successfully." });
+    } else {
+      res.status(404).json("User not found");
+    }
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 
 // login User
 export const loginUser = async (req, res) => {
@@ -98,7 +127,7 @@ export const requestPasswordReset = async (req, res) => {
       const emailToken = crypto.randomBytes(64).toString("hex");
       user.emailToken = emailToken;
       await user.save();
-
+      sendPasswordResetMail(user);
       res.status(200).json({ message: "Email token for password reset sent to the user's email address." });
     } else {
       res.status(404).json("User not found");

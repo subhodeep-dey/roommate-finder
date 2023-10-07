@@ -1,14 +1,14 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const createMailTransporter = () => {
     const transporter = nodemailer.createTransport({
         service: "hotmail",
         auth: {
-            user: "sdeysocial@outlook.com",
+            user: "cdac-kolkata@outlook.com",
             pass: process.env.EMAIL_PASS,
         },
     });
     return transporter;
 };
 
-module.exports = {createMailTransporter};
+export { createMailTransporter };
