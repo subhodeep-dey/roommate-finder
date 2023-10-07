@@ -1,0 +1,11 @@
+.button.bottom-right {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+
+.button.bottom-left {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}

@@ -1,0 +1,383 @@
+form {
+  display: flex;
+  flex-direction: column;
+}
+.form-section-1 input,
+.form-section-2 input {
+  padding: 1rem;
+  font-size: 1rem;
+}
+.errorMsg {
+  font-family: "Causten-Regular", Helvetica;
+  color: #ee1d52;
+}
+.form-section-1 {
+  margin: 2rem 0 0 0;
+  display: grid;
+  grid-template-columns: 47.5% 47.5%;
+  column-gap: 5%;
+}
+.form-section-1a,
+.form-section-1b {
+  display: flex;
+  flex-direction: column;
+}
+.form-section-1a label,
+.form-section-1b label {
+  margin-bottom: 4px;
+}
+.form-section-1a input,
+.form-section-1b input {
+  margin-bottom: 4px;
+  background-color: #d9d9d9;
+  border-radius: 8px;
+  height: 3rem;
+}
+.form-section-2 {
+  margin: 2rem 0 0 0;
+  display: grid;
+  grid-template-columns: 47.5% 47.5%;
+  column-gap: 5%;
+}
+.form-section-2a,
+.form-section-2b {
+  display: flex;
+  flex-direction: column;
+}
+.form-section-2a label,
+.form-section-2b label {
+  margin-bottom: 4px;
+}
+.form-section-2a input,
+.form-section-2b input {
+  margin-bottom: 4px;
+  background-color: #d9d9d9;
+  border-radius: 8px;
+  height: 3rem;
+}
+.form-section-3 {
+  margin: 2rem 0 0 0;
+  display: grid;
+  grid-template-columns: 47.5% 47.5%;
+  column-gap: 5%;
+}
+.form-section-3b {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section-3b label {
+  margin-bottom: 4px;
+}
+
+.form-section-3b input {
+  padding: 1rem;
+  font-size: 1rem;
+  margin-bottom: 4px;
+  background-color: #d9d9d9;
+  border-radius: 8px;
+  height: 3rem;
+}
+.input-group {
+  position: relative;
+}
+.form-section-3 .flex {
+  height: 80px;
+  outline: none;
+  border: 2px solid #7e8490;
+  width: 42.7vw;
+  border-radius: 10px;
+}
+.form-section-3 .flex label {
+  transform: translateX(14%) translateY(-52.5%) scale(1);
+  background-color: #ffffff;
+  padding: 0 0.2em;
+  color: #000000;
+  height: fit-content;
+  position: absolute;
+}
+.form-section-3-border {
+  width: 43vw;
+  display: flex;
+  padding-left: 5%;
+  justify-content: flex-start;
+  align-items: center;
+}
+.male,
+.female {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 3rem;
+}
+.form-section-4 button {
+  margin: 2rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.form-section-5 hr {
+  margin: 2.5rem 0 0 0;
+}
+@media screen and (max-width: 660px) {
+  .form-section-1 {
+    margin: 2rem 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .form-section-1a {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 1rem 0;
+  }
+
+  .form-section-1b {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+  }
+  .form-section-2 {
+    margin: 1rem 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .form-section-2a,
+  .form-section-2b {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+  }
+  .form-section-3 {
+    margin: 2rem 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-section-3b {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0 0 0;
+  }
+
+  .form-section-3-border {
+    width: 90vw;
+    display: flex;
+    padding-left: 12%;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  .form-section-3 .flex {
+    height: 80px;
+    outline: none;
+    border: 2px solid #7e8490;
+    width: 89.7vw;
+    border-radius: 10px;
+  }
+}
+.profile {
+  font-family: "Causten-SemiBold", Helvetica;
+  margin: 0 auto;
+  width: 90%;
+  height: 100%;
+  padding-bottom: 10px;
+  display: block;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.profile .activeprofile {
+  height: 80px;
+  width: 120px;
+  border-bottom: 2px solid #000000;
+  color: #000000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.profiletab-hr {
+  margin-top: 10px;
+}
+.profile-text {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-weight: bolder;
+  font-size: 32px;
+}
+.cards {
+  place-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
+  margin-bottom: 8%;
+}
+@media screen and (max-width: 950px) {
+  .cards {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3%;
+    margin-bottom: 8%;
+  }
+}
+
+@media screen and (max-width: 468px) {
+  .tab-buttons {
+    display: flex;
+    padding-top: 10px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .tabs button {
+    margin-right: 10px;
+    font-size: 16px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0px 20px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+  }
+  .tabs .nonactive {
+    height: 50px;
+    width: 120px;
+    color: #7e8490;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tabs .activeprofile {
+    height: 50px;
+    width: 120px;
+    border-bottom: 2px solid #000000;
+    color: #000000;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .roomate-icon img {
+    margin-bottom: 0px;
+    height: 28px;
+    width: 28px;
+  }
+  .roomate-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.listing {
+  font-family: "Causten-SemiBold", Helvetica;
+  margin: 0 auto;
+  width: 90%;
+  height: 100%;
+  padding-bottom: 10px;
+  display: block;
+}
+
+.listing-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.listing .activelisting {
+  height: 80px;
+  width: 180px;
+  border-bottom: 2px solid #000000;
+  color: #000000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.listingtab-hr {
+  margin-top: 10px;
+}
+.listing-text {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-weight: bolder;
+  font-size: 24px;
+}
+.cards {
+  place-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(410px, 1fr));
+  margin-bottom: 8%;
+}
+@media screen and (max-width: 950px) {
+  .cards {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3%;
+    margin-bottom: 8%;
+  }
+}
+
+@media screen and (max-width: 468px) {
+  .tab-buttons {
+    display: flex;
+    padding-top: 10px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .tabs button {
+    margin-right: 10px;
+    font-size: 16px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0px 20px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+  }
+  .tabs .nonactive {
+    height: 50px;
+    width: 120px;
+    color: #7e8490;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tabs .activeprofile {
+    height: 50px;
+    width: 120px;
+    border-bottom: 2px solid #000000;
+    color: #000000;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .roomate-icon img {
+    margin-bottom: 0px;
+    height: 28px;
+    width: 28px;
+  }
+  .roomate-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

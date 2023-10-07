@@ -1,0 +1,95 @@
+.profile {
+  font-family: "Causten-SemiBold", Helvetica;
+  margin: 0 auto;
+  width: 90%;
+  height: 100%;
+  padding-bottom: 10px;
+  display: block;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.profile .activeprofile {
+  height: 80px;
+  width: 120px;
+  border-bottom: 2px solid #000000;
+  color: #000000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.profiletab-hr {
+  margin-top: 10px;
+}
+.profile-text {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-weight: bolder;
+  font-size: 32px;
+}
+.cards {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3%;
+  margin-bottom: 8%;
+}
+
+@media screen and (max-width: 468px) {
+  .tab-buttons {
+    display: flex;
+    padding-top: 10px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .tabs button {
+    margin-right: 10px;
+    font-size: 16px;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0px 20px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+  }
+  .tabs .nonactive {
+    height: 50px;
+    width: 120px;
+    color: #7e8490;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tabs .activeprofile {
+    height: 50px;
+    width: 120px;
+    border-bottom: 2px solid #000000;
+    color: #000000;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .roomate-icon img {
+    margin-bottom: 0px;
+    height: 28px;
+    width: 28px;
+  }
+  .roomate-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
