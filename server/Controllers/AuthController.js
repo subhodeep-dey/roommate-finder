@@ -118,6 +118,7 @@ export const updatePassword = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashedPass = await bcrypt.hash(password, salt);
       user.password = hashedPass;
+      user.isVerified = true;
       user.emailToken = null;
       await user.save();
 
