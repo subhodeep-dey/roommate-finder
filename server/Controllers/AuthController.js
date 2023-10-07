@@ -62,22 +62,28 @@ export const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await UserModel.findOne({ username: username });
+
     if (user) {
       const validity = await bcrypt.compare(password, user.password);
+
       if (!validity) {
-        res.status(400).json("wrong password");
+        res.status(400).json("Wrong password");
       } else {
-        const token = jwt.sign(
-          { username: user.username, id: user._id },
-          process.env.JWTKEY,
-          { expiresIn: "1h" }
-        );
-        res.status(200).json({ user, token });
+        if (!user.isVerified) {
+          res.status(400).json("Email not verified");
+        } else {
+          const token = jwt.sign(
+            { username: user.username, id: user._id },
+            process.env.JWTKEY,
+            { expiresIn: "1h" }
+          );
+          res.status(200).json({ user, token });
+        }
       }
     } else {
       res.status(404).json("User not found");
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json(err.message);
   }
 };
