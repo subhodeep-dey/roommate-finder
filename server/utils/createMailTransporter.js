@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 const createMailTransporter = async () => {
     try {
         console.log("Creating transporter...");
-        const transporter = nodemailer.createTransport({
+        const transporter = await nodemailer.createTransport({
             service: "hotmail",
             auth: {
                 user: "cdac-kolkata@outlook.com",
