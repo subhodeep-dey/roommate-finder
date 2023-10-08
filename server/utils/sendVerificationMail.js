@@ -1,7 +1,7 @@
 import { createMailTransporter } from "./createMailTransporter.js";
 
-export function sendVerificationMail(user) {
-  const transporter = createMailTransporter();
+export async function sendVerificationMail(user) {
+  const transporter = await createMailTransporter();
 
   const mailOptions = {
     from: "RoomMate Dhoondho <cdac-kolkata@outlook.com>",
@@ -10,11 +10,12 @@ export function sendVerificationMail(user) {
     html: `Hello ${user.username},<br/><br/>Verify your email by clicking this link: <a href='${process.env.CLIENT_URL}/verifyEmail?emailToken=${user.emailToken}'>Verify Your Email</a>`,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Verification email sent: " + info.response);
-    }
-  });
+  try {
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("Verification email sent: " + info.response);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
