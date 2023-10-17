@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 const createMailTransporter = async () => {
     try {
         console.log("Creating transporter...");
-        const transporter = await nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             service: "hotmail",
             auth: {
                 user: "cdac-kolkata@outlook.com",
@@ -14,6 +14,7 @@ const createMailTransporter = async () => {
             secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
             requireTLS: true, // Force TLS
         });
+
         // Verify connection configuration
         await new Promise((resolve, reject) => {
             transporter.verify((error, success) => {
@@ -26,6 +27,7 @@ const createMailTransporter = async () => {
                 }
             });
         });
+
         console.log("Transporter created:", transporter);
         return transporter;
     } catch (error) {
