@@ -40,29 +40,32 @@
 
 import nodemailer from 'nodemailer';
 
-function createMailTransporter() {
-    const transporter = nodemailer.createTransport({
-        host: "smtp-relay.sendinblue.com",
-        port: 587,
-        auth: {
-            user: "sdeysocial@gmail.com",
-            pass: process.env.SENDINLBUE_API_KEY,
-        },
-    });
+async function createMailTransporter() {
+    try {
+        const transporter = await nodemailer.createTransport({
+            host: "smtp-relay.sendinblue.com",
+            port: 587,
+            auth: {
+                user: "sdeysocial@gmail.com",
+                pass: process.env.SENDINLBUE_API_KEY,
+            },
+        });
 
-    return {
-        sendMail: function (mailOptions) {
-            return new Promise((resolve, reject) => {
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        reject(error);
-                    } else {
+        return {
+            sendMail: function (mailOptions) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const info = await transporter.sendMail(mailOptions);
                         resolve(info);
+                    } catch (error) {
+                        reject(error);
                     }
                 });
-            });
-        }
-    };
+            }
+        };
+    } catch (error) {
+        throw error;
+    }
 }
 
 export { createMailTransporter };
