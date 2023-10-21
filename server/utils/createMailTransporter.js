@@ -47,7 +47,7 @@ async function createMailTransporter() {
             port: 587,
             auth: {
                 user: "sdeysocial@gmail.com",
-                pass: "xsmtpsib-c98093a5164e4e2a1d6c76274c74e40ec61e3d57daeb7f5af387e4737723757c-LgVNT4zyOs7UwWY3",
+                pass: "xsmtpsib-c98093a5164e4e2a1d6c76274c74e40ec61e3d57daeb7f5af387e4737723757c-2zCPqdaMgWmQXvyB",
             },
         });
 
