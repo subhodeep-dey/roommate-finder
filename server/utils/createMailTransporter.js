@@ -43,11 +43,11 @@ import nodemailer from 'nodemailer';
 async function createMailTransporter() {
     try {
         const transporter = await nodemailer.createTransport({
-            host: "smtp-relay.sendinblue.com",
+            host: "smtp.office365.com",
             port: 587,
             auth: {
-                user: "sdeysocial@gmail.com",
-                pass: "xsmtpsib-c98093a5164e4e2a1d6c76274c74e40ec61e3d57daeb7f5af387e4737723757c-2zCPqdaMgWmQXvyB",
+                user: "cdac-kolkata@outlook.com",
+                pass: process.env.EMAIL_PASS,
             },
         });
 
