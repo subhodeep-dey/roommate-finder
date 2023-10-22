@@ -43,11 +43,12 @@ import nodemailer from 'nodemailer';
 async function createMailTransporter() {
     try {
         const transporter = await nodemailer.createTransport({
-            host: "smtp.office365.com",
-            port: 587,
+            // host: "smtp.gmail.com",
+            service: "gmail", // no need to set host or port etc.
+            // port: 587,
             auth: {
-                user: "cdac-kolkata@outlook.com",
-                pass: process.env.EMAIL_PASS,
+                user: "sdeysocial@gmail.com",
+                pass: process.env.GMAIL_APP_PASS,
             },
         });
 
