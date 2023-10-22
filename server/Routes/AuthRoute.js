@@ -9,7 +9,9 @@ router.use(bodyParser.json());
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/verify-email', verifyEmail);
-router.post('/resend-verify-email', resendVerificationEmail);
+router.post('/resend-verify-email', async (req, res) => {
+    await resendVerificationEmail(req, res);
+});
 router.post('/password-reset', requestPasswordReset);
 router.post('/update-password', updatePassword);
 

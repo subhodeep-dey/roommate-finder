@@ -1,13 +1,13 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Roommate Finder Server",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "nodemon index.js"
   },
-  "author": "",
+  "author": "mfc",
   "license": "ISC",
   "dependencies": {
     "@getbrevo/brevo": "^1.0.1",

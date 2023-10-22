@@ -75,16 +75,17 @@ export const resendVerificationEmail = async (req, res) => {
       user.emailToken = emailToken;
       await user.save();
 
-      sendVerificationMail(user);
+      // Add async/await to the sendVerificationMail function call
+      await sendVerificationMail(user);
+      
       res.status(200).json({ message: "Verification email resent successfully." });
     } else {
       res.status(404).json("User not found");
     }
   } catch (err) {
-    res.status(500).json(err.message);
+    res.status(500).json(err.message); // Fix typo here, 'Message' should be 'message'
   }
 };
-
 
 // login User
 export const loginUser = async (req, res) => {

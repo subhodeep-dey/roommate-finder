@@ -38,6 +38,39 @@
 
 // export { createMailTransporter };
 
+// import nodemailer from 'nodemailer';
+
+// async function createMailTransporter() {
+//     try {
+//         const transporter = await nodemailer.createTransport({
+//             // host: "smtp.gmail.com",
+//             service: "gmail", // no need to set host or port etc.
+//             // port: 587,
+//             auth: {
+//                 user: "sdeysocial@gmail.com",
+//                 pass: process.env.GMAIL_APP_PASS,
+//             },
+//         });
+
+//         return {
+//             sendMail: function (mailOptions) {
+//                 return new Promise(async (resolve, reject) => {
+//                     try {
+//                         const info = await transporter.sendMail(mailOptions);
+//                         resolve(info);
+//                     } catch (error) {
+//                         reject(error);
+//                     }
+//                 });
+//             }
+//         };
+//     } catch (error) {
+//         throw error;
+//     }
+// }
+
+// export { createMailTransporter };
+
 import nodemailer from 'nodemailer';
 
 async function createMailTransporter() {
