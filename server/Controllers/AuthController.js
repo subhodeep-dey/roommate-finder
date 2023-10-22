@@ -8,23 +8,27 @@ import { sendPasswordResetMail } from "../utils/sendPasswordResetMail.js";
 // Registering a new User
 export const registerUser = async (req, res) => {
   console.log(req.body);
-  const salt = await bcrypt.genSalt(10);
-  const hashedPass = await bcrypt.hash(req.body.password, salt);
-  req.body.password = hashedPass;
-  const newUser = new UserModel(req.body);
-  const { username } = req.body;
   try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hashedPass;
+    const newUser = new UserModel(req.body);
+    const { username } = req.body;
+
     const oldUser = await UserModel.findOne({ username });
     if (oldUser) return res.status(400).json({ message: "User already exists" });
+
     const emailToken = crypto.randomBytes(64).toString("hex");
     newUser.emailToken = emailToken;
+
     const user = await newUser.save();
+
     const token = jwt.sign(
       { username: user.username, id: user._id, emailToken: user.emailToken },
       process.env.JWTKEY,
       { expiresIn: "1h" }
     );
-    sendVerificationMail(user);
+    await sendVerificationMail(user);
     res.status(200).json({ user, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -74,16 +78,13 @@ export const resendVerificationEmail = async (req, res) => {
       const emailToken = crypto.randomBytes(64).toString("hex");
       user.emailToken = emailToken;
       await user.save();
-
-      // Add async/await to the sendVerificationMail function call
       await sendVerificationMail(user);
-      
       res.status(200).json({ message: "Verification email resent successfully." });
     } else {
       res.status(404).json("User not found");
     }
   } catch (err) {
-    res.status(500).json(err.message); // Fix typo here, 'Message' should be 'message'
+    res.status(500).json(err.message);
   }
 };
 
@@ -128,7 +129,9 @@ export const requestPasswordReset = async (req, res) => {
       const emailToken = crypto.randomBytes(64).toString("hex");
       user.emailToken = emailToken;
       await user.save();
-      sendPasswordResetMail(user);
+
+      await sendPasswordResetMail(user);
+
       res.status(200).json({ message: "Email token for password reset sent to the user's email address." });
     } else {
       res.status(404).json("User not found");
