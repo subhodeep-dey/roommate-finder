@@ -1,59 +1,86 @@
 import mongoose from "mongoose";
 
 const UserSchema = mongoose.Schema(
-    {
-        username: {                 // username is email
-            type: String,
-            required: true
-        },
-        password : {
-            type: String,
-            required: true
-        },
-        firstname: {
-            type: String,
-            required: false
-        },
-        lastname : {
-            type: String,
-            required: false
-        },
-        regnum: {
-            type: String,
-            required: false
-        },
-        gender: String,
-        rank : {
-            type: Number,
-            required: false
-        },
-        year : {
-            type: Number,
-            required: false
-        },                   // year of study
-        mobile : {
-            type: Number,
-            required: false
-        },
-        isAdmin : {
-            type: Boolean,
-            default: false,
-        },
-        profilePicture: String,
-        coverPicture: String,
-        about: String,
-        isVerified: {
-            type: Boolean,
-            default: false,
-        },
-        emailToken: String,
-        followers: [],
-        following: [],
-        likesRoommate: [],
-        likesRoom: []
+  {
+    username: {
+      type: String,
+      required: true
     },
-    {timestamps: true}
-)
+    password: {
+      type: String,
+      required: true
+    },
+    firstname: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    lastname: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    regnum: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    gender: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    rank: {
+      type: Number,
+      default: null  // Set default value to null
+    },
+    year: {
+      type: Number,
+      default: null  // Set default value to null
+    },
+    mobile: {
+      type: Number,
+      default: null  // Set default value to null
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    profilePicture: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    coverPicture: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    about: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    emailToken: {
+      type: String,
+      default: null  // Set default value to null
+    },
+    followers: {
+      type: Array,
+      default: []  // Set default value to an empty array
+    },
+    following: {
+      type: Array,
+      default: []  // Set default value to an empty array
+    },
+    likesRoommate: {
+      type: Array,
+      default: []  // Set default value to an empty array
+    },
+    likesRoom: {
+      type: Array,
+      default: []  // Set default value to an empty array
+    }
+  },
+  { timestamps: true }
+);
 
-const UserModel= mongoose.model("Users", UserSchema);
-export default UserModel
+const UserModel = mongoose.model("Users", UserSchema);
+export default UserModel;
