@@ -7,6 +7,7 @@ const postSchema = mongoose.Schema(
       type: Number,
       required: true
     },
+    username: String,
     gender: String,
     preferredBed: {
       type: Number,
