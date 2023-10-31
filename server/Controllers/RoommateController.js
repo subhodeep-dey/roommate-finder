@@ -38,14 +38,21 @@ export const getRoommate = async (req, res) => {
 };
 
 // Get all Roommates
-
 export const getAllRoommate = async (req, res) => {
-
   try {
-    const Roommates = await needRoommateModel.find();
-    res.status(200).json(Roommates);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10000000;
+
+    const skip = (page - 1) * limit;
+
+    const roommates = await needRoommateModel
+      .find()
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json(roommates);
   } catch (error) {
-    res.status(403).json("Action forbidden 403");
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 

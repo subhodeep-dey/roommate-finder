@@ -4,17 +4,20 @@ import bcrypt from "bcrypt";
 // get all Users
 export const getAllUser = async (req, res) => {
   try {
-    const users = await UserModel.find();
-    const userDetails = users.map(user => {
-      const { password, ...otherDetails } = user._doc;
-      return otherDetails;
-    });
-    res.status(200).json(userDetails);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10000000;
+    const skip = (page - 1) * limit;
+    const users = await UserModel
+      .find()
+      .select('-password')
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 // get a User
 export const getUser = async (req, res) => {

@@ -38,15 +38,23 @@ export const getRoom = async (req, res) => {
 };
 
 // Get all Rooms
-
 export const getAllRoom = async (req, res) => {
   try {
-    const rooms = await needRoomModel.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10000000;
+    const skip = (page - 1) * limit;
+
+    const rooms = await needRoomModel
+      .find()
+      .skip(skip)
+      .limit(limit);
+
     res.status(200).json(rooms);
   } catch (error) {
-    res.status(403).json("Action forbidden 403");
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 // Update a Room
 export const updateRoom = async (req, res) => {
