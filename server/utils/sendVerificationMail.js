@@ -49,7 +49,7 @@ export async function sendVerificationMail(user) {
   const transporter = await createMailTransporter();
 
   const mailOptions = {
-    from: "RoomMate Dhoondho <sdeysocial@gmail.com>",
+    from: "RoomMate Dhoondho <roommate.dhoondho@gmail.com>",
     to: user.username,
     subject: "Verify your email - RoomMate Dhoondho",
     html: `Hello ${user.username},<br/><br/>Verify your email by clicking this link: <a href='${process.env.CLIENT_URL}/verifyEmail?emailToken=${user.emailToken}'>Verify Your Email</a>`,

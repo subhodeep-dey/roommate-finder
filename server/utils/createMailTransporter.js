@@ -76,11 +76,11 @@ import nodemailer from 'nodemailer';
 async function createMailTransporter() {
     try {
         const transporter = await nodemailer.createTransport({
-            // host: "smtp.gmail.com",
+            // host: "smtp-relay.brevo.com",
             service: "gmail", // no need to set host or port etc.
             // port: 587,
             auth: {
-                user: "sdeysocial@gmail.com",
+                user: "roommate.dhoondho@gmail.com",
                 pass: process.env.GMAIL_APP_PASS,
             },
         });
