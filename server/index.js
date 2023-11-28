@@ -8,8 +8,13 @@ import UserRoute from './Routes/UserRoute.js'
 import RoomRoute from './Routes/RoomRoute.js'
 import RoommateRoute from './Routes/RoommateRoute.js'
 
-// Routes
+if(process.env.NODE_ENV === "production") {
+  console.log = () => {}
+  console.error = () => {}
+  console.debug = () => {}
+}
 
+// Routes
 const app = express();
 
 
