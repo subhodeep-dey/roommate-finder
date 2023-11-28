@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signUp } from "../../actions/AuthActions.js";
 import { useDispatch } from "react-redux";
+import { Helmet } from "react-helmet";
 
 let initialFormState = { email: "", password: "", agree: false };
 let verifyInitialFormState = { code: "" };
@@ -29,7 +30,8 @@ function SignUP() {
     let name = e.target.name;
     if (name === "email") {
       validateEmail(e.target.value);
-    } else if (name === "password") {
+    } 
+    else if (name === "password") {
       validatePassword(e.target.value);
     }
     let change = {};
@@ -54,11 +56,11 @@ function SignUP() {
   }
 
   function validateEmail(email) {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const emailRegex = /^[A-Za-z0-9._%+-]+@vitstudent.ac.in$/;
     let isEmailValid = emailRegex.test(email);
     if (!isEmailValid) {
       setFormError((prev) => {
-        return { ...prev, email: "Please enter a valid email" };
+        return { ...prev, email: "Please enter a valid email in the format 'mfc@vitstudent.ac.in'" };
       });
     } else {
       setFormError((prev) => {
@@ -89,7 +91,7 @@ function SignUP() {
   }
 
   async function signUpClickHandler() {
-    // setIsVerification(true);
+    setIsVerification(true);
     let data = {
       username: form.email,
       password: form.password,
@@ -98,18 +100,57 @@ function SignUP() {
     setForm(initialFormState);
   }
 
+  async function signUpClickHandler() {
+    const isEmailValid = validateEmail(form.email);
+    const isPasswordValid = validatePassword(form.password);
+    if (!isEmailValid) {
+      toast.error("Please enter a valid email in the format 'example@vitstudent.ac.in'");
+      return;
+    }
+    if (!isPasswordValid) {
+      toast.error("Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.");
+      return;
+    }
+
+    let data = {
+      username: form.email,
+      password: form.password,
+    };
+    dispatch(signUp(data, navigate));
+    setForm(initialFormState);
+  }
+  
+
   function verifyCodeClickHandler() {
     console.log("verifyform", verifyForm);
     setIsVerification(false);
     setVerifyForm(initialFormState);
-    toast.success("You have successfully signed in!");
-    navigate("/");
   }
   return (
     <div className="flex flex-col h-screen">
+      <Helmet>
+        <script type="text/javascript">
+          {`
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+              s1.async=true;
+              s1.src='https://embed.tawk.to/65660e221db16644c5558560/1hgbaeehq';
+              s1.charset='UTF-8';
+              s1.setAttribute('crossorigin','*');
+              s0.parentNode.insertBefore(s1,s0);
+            })();
+          `}
+        </script>
+      </Helmet>
       <Header />
       <div className="flex flex-grow h-auto">
-        <div className="hidden md:inline-block md:w-[45%] bg-[#D9D9D9]"></div>
+        <div
+          className="md:inline-block md:w-[45%] bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${require("../../Assets/signup.jpg")})`,
+          }}
+        ></div>
         <div className="w-[100%] md:w-[55%] flex justify-center">
           {!isVerification ? (
             <div className="flex flex-col pt-[2rem] items-center w-[80%]">
@@ -117,17 +158,17 @@ function SignUP() {
                 Sign Up
               </h1>
               <p className="mb-5 text-[#3C4242] text-[14px] w-full">
-                Sign up for free to access any of our products
+                Sign up for free to access Roommate Dhoondho
               </p>
-              <button className="flex justify-center items-center font-[600] text-[#06105A] w-[100%]  mr-2 rounded-[8px] border-[#06105A] border-[1.75px] px-[2rem] py-[0.75rem]">
+              {/* <button className="flex justify-center items-center font-[600] text-[#06105A] w-[100%]  mr-2 rounded-[8px] border-[#06105A] border-[1.75px] px-[2rem] py-[0.75rem]">
                 <FcGoogle size={25} className="mr-2" /> Continue with Google
-              </button>
+              </button> */}
 
-              <div className="flex items-center w-full box-border mt-6 mb-8">
+              {/* <div className="flex items-center w-full box-border mt-6 mb-8">
                 <div className="flex-grow h-[1px] bg-[#666666]"></div>
                 <span className="text-[#666666] pl-2 pr-2">OR</span>
                 <div className="flex-grow h-[1px] bg-[#666666]"></div>
-              </div>
+              </div> */}
 
               <div className="w-full mb-6">
                 <span className="text-[#3C4242] text-[16px]">
@@ -169,7 +210,7 @@ function SignUP() {
                   value={form.password}
                   onChange={formOnChangeHandler}
                   name="password"
-                  type={showPassword ? "password" : ""}
+                  type={showPassword ? "text" : "password"}
                   className="mt-2 rounded-[8px] border-[#3C4242] border-[1px] w-full p-[0.75rem] "
                 />
 

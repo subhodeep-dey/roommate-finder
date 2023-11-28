@@ -3,6 +3,7 @@ import axios from "axios";
 import "../Cards/Cards.css";
 import { ListingContext } from "../../Context/listing-context";
 import Modal2 from "../Modal/Modal2";
+import { toast } from "react-toastify";
 
 function DisplayRoomListingCard() {
   const { showModal2, selectRoomDetail } = useContext(ListingContext);
@@ -13,22 +14,22 @@ function DisplayRoomListingCard() {
     const fetchData = async () => {
       try {
         const user_Id = profileData.user._id;
-        console.log("user_Id recorded:", user_Id);
+        // console.log("user_Id recorded:", user_Id);
 
         const requestData = {
           userId: user_Id,
         };
 
-        console.log("requestData:", requestData);
+        // console.log("requestData:", requestData);
 
         const response = await axios.post(
           `https://roommate-finder-theta.vercel.app/room/my/${user_Id}`,
           requestData
         );
         setRooms(response.data);
-        console.log("Room Data:", response.data);
+        // console.log("Room Data:", response.data);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        // console.error("Error fetching rooms:", error);
       }
     };
 
@@ -48,11 +49,11 @@ function DisplayRoomListingCard() {
           data: requestBody,
         }
       );
-
-      console.log("Room deleted:", response);
-      setRooms((prevRooms) => prevRooms.filter((room) => room.id !== room_id));
+        toast.success("Room deleted successfully!");
+      // console.log("Room deleted:", response);
+      setRooms((prevRooms) => prevRooms.filter((room) => room._id !== room_id));
     } catch (error) {
-      console.error("Error deleting room:", error);
+      // console.error("Error deleting room:", error);
     }
   };
   return (
@@ -63,10 +64,19 @@ function DisplayRoomListingCard() {
           <div className="cards">
             <div className="main-card">
               <div className="card-details">
-                <div className="card-img"></div>
+              <div
+                className="card-img"
+                style={{
+                  backgroundImage: `url('https://c4.wallpaperflare.com/wallpaper/40/849/87/anime-girls-wallpaper-preview.jpg')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  // width: '132px',
+                  // height: '158px',
+                }}
+              ></div>
                 <div className="card-info">
                   <div className="card-informatios">
-                    <div className="card-name">{room.preferredBlock} Block</div>
+                    <div className="card-name">{room.preferredBlock} Block Posting</div>
                     <div
                       className="card-add"
                       onClick={() => deleteRoom(room._id)}
@@ -116,7 +126,7 @@ function DisplayRoomListingCard() {
                 <hr />
               </div>
               <div className="card-habits-section">
-                <div className="card-habit">Leader</div>
+                <div className="card-habit">For Description - Click on the button</div>
                 <div
                   className="card-habit-details"
                   onClick={() => selectRoomDetail(room.desc)}

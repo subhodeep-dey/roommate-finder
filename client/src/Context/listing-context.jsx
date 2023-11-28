@@ -14,12 +14,16 @@ export const ListingContextProvider = (props) => {
   const [showModal2, setShowModel2] = useState(false);
   const [seletedroommatedetail, setSelectedRoommateDetail] = useState(null);
   const [seletedroomdetail, setSelectedRoomDetail] = useState(null);
+  const [seletedroommatephone, setSelectedRoommatePhone] = useState(null);
+  const [seletedroomphone, setSelectedRoomPhone] = useState(null);
+  const [seletedroommateemail, setSelectedRoommateEmail] = useState(null);
+  const [seletedroomemail, setSelectedRoomEmail] = useState(null);
 
   const getDefaultCart2 = (roommateList) => {
     let cart = {};
     for (const roommateId in roommateList) {
       cart[roommateId] = 0;
-      console.log(roommateId);
+      // console.log(roommateId);
     }
     return cart;
   };
@@ -27,64 +31,65 @@ export const ListingContextProvider = (props) => {
     let cart = {};
     for (const roomId in roomList) {
       cart[roomId] = 0;
-      console.log(roomId);
+      // console.log(roomId);
     }
     return cart;
   };
 
-  useEffect(() => {
-    axios
-      .get("https://roommate-finder-theta.vercel.app/roommate/all")
-      .then((response) => {
-        const roommatePostsWithUserDetailsPromises = response.data.map(
-          (post) => {
-            return axios
-              .get(
-                `https://roommate-finder-theta.vercel.app/user/${post.userId}`
-              )
-              .then((userResponse) => {
-                const userDetails = userResponse.data;
-                return {
-                  ...post,
-                  userDetails,
-                };
-              });
-          }
-        );
+  // useEffect(() => {
+  //   axios
+  //     .get("https://roommate-finder-theta.vercel.app/roommate/all")
+  //     .then((response) => {
+  //       const roommatePostsWithUserDetailsPromises = response.data.map(
+  //         (post) => {
+  //           return axios
+  //             .get(
+  //               `https://roommate-finder-theta.vercel.app/user/${post.userId}`
+  //             )
+  //             .then((userResponse) => {
+  //               const userDetails = userResponse.data;
+  //               return {
+  //                 ...post,
+  //                 userDetails,
+  //               };
+  //             });
+  //         }
+  //       );
 
-        return Promise.all(roommatePostsWithUserDetailsPromises);
-      })
-      .then((roommatePostsWithUserDetails) => {
-        setRoommateList(roommatePostsWithUserDetails);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  //       return Promise.all(roommatePostsWithUserDetailsPromises);
+  //     })
+  //     .then((roommatePostsWithUserDetails) => {
+  //       console.log("Roommate post details:", roommatePostsWithUserDetails);
+  //       setRoommateList(roommatePostsWithUserDetails);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
 
-    axios
-      .get("https://roommate-finder-theta.vercel.app/room/all")
-      .then((response) => {
-        const roomPostsWithUserDetailsPromises = response.data.map((post) => {
-          return axios
-            .get(`https://roommate-finder-theta.vercel.app/user/${post.userId}`)
-            .then((userResponse) => {
-              const userDetails = userResponse.data;
-              return {
-                ...post,
-                userDetails,
-              };
-            });
-        });
+  //   axios
+  //     .get("https://roommate-finder-theta.vercel.app/room/all")
+  //     .then((response) => {
+  //       const roomPostsWithUserDetailsPromises = response.data.map((post) => {
+  //         return axios
+  //           .get(`https://roommate-finder-theta.vercel.app/user/${post.userId}`)
+  //           .then((userResponse) => {
+  //             const userDetails = userResponse.data;
+  //             return {
+  //               ...post,
+  //               userDetails,
+  //             };
+  //           });
+  //       });
 
-        return Promise.all(roomPostsWithUserDetailsPromises);
-      })
-      .then((roomPostsWithUserDetails) => {
-        setRoomList(roomPostsWithUserDetails);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  //       return Promise.all(roomPostsWithUserDetailsPromises);
+  //     })
+  //     .then((roomPostsWithUserDetails) => {
+  //       setRoomList(roomPostsWithUserDetails);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     setCartItems(getDefaultCart(roomList));
@@ -92,27 +97,66 @@ export const ListingContextProvider = (props) => {
   }, [roomList, roommateList]);
 
   const selectRoommateDetail = (RoommateDetail) => {
-    console.log(RoommateDetail);
+    // console.log(RoommateDetail);
     const roommateHabits = roommateList.find((post) => {
       return post === RoommateDetail;
     });
 
     setSelectedRoommateDetail(RoommateDetail);
-    console.log(setSelectedRoommateDetail);
+    // console.log(setSelectedRoommateDetail);
+    setShowModel(true);
+  };
+  const selectRoommatePhone = (RoommatePhone) => {
+    // console.log(RoommateDetail);
+    const roommatephoneNo = roommateList.find((post) => {
+      return post === RoommatePhone;
+    });
+
+    setSelectedRoommatePhone(RoommatePhone);
+    // console.log(setSelectedRoommateDetail);
+    setShowModel(true);
+  };
+  const selectRoommateEmail = (RoommateEmail) => {
+    // console.log(RoommateDetail);
+    const roommateemailid = roommateList.find((post) => {
+      return post === RoommateEmail;
+    });
+
+    setSelectedRoommateEmail(RoommateEmail);
+    // console.log(setSelectedRoommateDetail);
     setShowModel(true);
   };
 
   const selectRoomDetail = (RoomDetail) => {
-    console.log(RoomDetail);
+    // console.log(RoomDetail);
     const roomHabits = roommateList.find((post) => {
       return post === RoomDetail;
     });
 
     setSelectedRoomDetail(RoomDetail);
-    console.log(setSelectedRoomDetail);
+    // console.log(setSelectedRoomDetail);
     setShowModel2(true);
   };
+  const selectRoomPhone = (RoomPhone) => {
+    // console.log(RoomDetail);
+    const roomPhone = roommateList.find((post) => {
+      return post === RoomPhone;
+    });
 
+    setSelectedRoomPhone(RoomPhone);
+    // console.log(setSelectedRoomDetail);
+    setShowModel2(true);
+  };
+  const selectRoomEmail = (RoomEmail) => {
+    // console.log(RoomDetail);
+    const roomEmail = roommateList.find((post) => {
+      return post === RoomEmail;
+    });
+
+    setSelectedRoomEmail(RoomEmail);
+    // console.log(setSelectedRoomDetail);
+    setShowModel2(true);
+  };
   const closeModal = () => {
     setShowModel(false);
     setShowModel2(false);
@@ -155,6 +199,7 @@ export const ListingContextProvider = (props) => {
     showModal,
     setShowModel,
     selectRoommateDetail,
+    selectRoommatePhone,
     seletedroommatedetail,
     selectRoomDetail,
     seletedroomdetail,
@@ -162,9 +207,20 @@ export const ListingContextProvider = (props) => {
     showModal2,
     setShowModel2,
     closeModal2,
+    seletedroommatephone,
+    setSelectedRoommatePhone,
+    seletedroomphone,
+    setSelectedRoomPhone,
+    seletedroommateemail,
+    setSelectedRoommateEmail,
+    seletedroomemail,
+    setSelectedRoomEmail,
+    selectRoommateEmail,
+    selectRoomPhone,
+    selectRoomEmail,
   };
-  console.log(cartItems);
-  console.log(cartItems2);
+  // console.log(cartItems);
+  // console.log(cartItems2);
 
   return (
     <ListingContext.Provider value={contextValue}>

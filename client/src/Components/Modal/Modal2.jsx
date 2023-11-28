@@ -1,11 +1,19 @@
 import { useContext } from "react";
+import React from "react";
 import { ListingContext } from "../../Context/listing-context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Modal.css";
 
 function Modal2() {
-  const { seletedroomdetail, seletedroomname, seletedroomphone, closeModal2 } =
+  const profileData = JSON.parse(localStorage.getItem("profile"));
+  const { seletedroomdetail, seletedroomemail, seletedroomphone, closeModal2 } =
     useContext(ListingContext);
-  console.log(seletedroomdetail);
+  // console.log(seletedroomdetail);
+  const countryCode = "91";
+  const whatsappMessage = `Hello! I am ${profileData.user.firstname} ${profileData.user.lastname}, I found your listing from Roommate Dhoondho app and I am interested in your listing.`;
+  const whatsappLink = `https://wa.me/${countryCode}${seletedroomphone}?text=${encodeURIComponent(
+    whatsappMessage
+  )}`;
   return (
     <aside className="modal-overlay">
       <div className="modal-container">
@@ -13,7 +21,7 @@ function Modal2() {
           <div className="habitstab-main">
             <div className="habits-buttons">
               <div className="activehabits">
-                <p className="habits-text">Leader</p>
+                <p className="habits-text">Description</p>
               </div>
             </div>
             <div className="habitstab-hr">
@@ -21,6 +29,21 @@ function Modal2() {
             </div>
           </div>
           <div className="habitssection">
+            <p>
+              <b>Phone Number: </b>
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                <FontAwesomeIcon icon="fab fa-whatsapp" />
+                <i class="fab fa-whatsapp"></i> {seletedroomphone}
+              </a>
+            </p>
+            <br />
+            <p>
+              <b>Email Id: </b>
+
+              {seletedroomemail}
+            </p>
+            <br />
+            <b>Details:</b>
             <p>{seletedroomdetail}</p>
           </div>
           <button

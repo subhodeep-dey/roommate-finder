@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../../actions/AuthActions";
 import { useDispatch, useSelector } from "react-redux";
+import { Alert } from "@mui/material";
 import "./Navbar.css";
 
 function Navbar() {
+  const profileData = JSON.parse(localStorage.getItem("profile")) || {};
+  const isProfileSet = profileData && !!profileData.user?.firstname;
   const [navbar, setHeader] = useState("navbar");
   const navigate = useNavigate();
   const [click, setClick] = useState(false);
@@ -32,7 +35,9 @@ function Navbar() {
   const dispatch = useDispatch();
 
   const handleLogOut = () => {
+    localStorage.removeItem("profile");
     dispatch(logout());
+    navigate("/");
   };
 
   function ProfileClickHandler() {
@@ -41,8 +46,15 @@ function Navbar() {
 
   return (
     <>
+      {!isProfileSet && (
+        <Alert severity="warning" className="profile-message">
+          <Link to="/profile">Profile not set. Please set your profile first from here. </Link>
+        </Alert>
+      )}
       <nav className="navbar">
-        <img src="./image/logo.png" alt="" style={{ height: "60px" }} />
+        <a href="/home">
+          <img src="./image/logo.png" alt="" style={{ height: "60px" }} />
+        </a>
         <div className="menu-icon" onClick={handleClick}>
           <i className={click ? "fas fa-times" : "fas fa-bars"} />
         </div>
@@ -85,6 +97,21 @@ function Navbar() {
                 </span>
               </button>
             </NavLink>
+            <li className="nav-item">
+            <NavLink to="/chat" className="nav-links" onClick={closeMobileMenu}>
+              <button className="chat">
+                {" "}
+                <span className="button_icon" onClick={handleClick}>
+                  <i
+                    className={
+                      click ? "fa-solid fa-comments blue" : "fa-solid fa-comments white"
+                    }
+                  />
+                  Chat
+                </span>
+              </button>
+            </NavLink>
+          </li>
           </li>
           <li className="nav-item">
             <Link
@@ -126,6 +153,11 @@ function Navbar() {
             </Link>
           </li>
           <li className="nav-item-mobile">
+            <Link to="/chatMobile" className="nav-links-mobile user" onClick={closeMobileMenu}>
+                  Chat
+            </Link>
+          </li>
+          <li className="nav-item-mobile">
             <Link
               to="/selections"
               className="nav-links-mobile bookmarks"
@@ -140,7 +172,7 @@ function Navbar() {
               className="nav-links-mobile user"
               onClick={closeMobileMenu}
             >
-              Users
+              Profile
             </Link>
           </li>
           <li className="nav-item-mobile">

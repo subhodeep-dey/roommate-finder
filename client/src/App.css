@@ -14,4 +14,8 @@
   src: url(../public/fonts/Causten-Semi-Bold.ttf);
   font-family: Causten-Regular;
   src: url(../public/fonts/Causten-Regular.ttf);
+  font-family: Inter-Semi-Bold;
+  src: url(../public/fonts/Inter-SemiBold.ttf);
+  font-family: Inter-Regular;
+  src: url(../public/fonts/Inter-Regular.ttf);
 }

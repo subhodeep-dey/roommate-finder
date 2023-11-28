@@ -36,7 +36,7 @@
 
 .activehabits {
   height: 60px;
-  width: 100px;
+  width: 140px;
   border-bottom: 2px solid #000000;
   color: #000000;
   display: inline-flex;
@@ -44,15 +44,20 @@
   align-items: flex-end;
 }
 .habits-text {
-  font-size: 24px;
+  font-size: 22px;
+  flex-wrap: nowrap;
   display: flex;
   justify-content: flex-start;
   font-weight: bold;
 }
 .habitssection {
-  height: 43vh;
+  height: 80%;
   padding: 20px 0 20px 0;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  overflow: auto;
 }
+
 .habits button {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -93,7 +98,7 @@
 
   .activehabits {
     height: 40px;
-    width: 50px;
+    width: 100px;
     border-bottom: 2px solid #000000;
     color: #000000;
     display: inline-flex;
@@ -102,14 +107,21 @@
   }
   .habits-text {
     font-size: 16px;
+    flex-wrap: nowrap;
+    width: 100px;
     display: flex;
     justify-content: flex-start;
     font-weight: bold;
   }
   .habitssection {
-    height: 195px;
     padding: 8px 0 8px 0;
     font-size: 12px;
+
+    height: 77.5%;
+    padding: 20px 0 20px 0;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    overflow: auto;
   }
   .habits button {
     padding-left: 0.5rem !important;

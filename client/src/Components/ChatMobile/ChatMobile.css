@@ -1,0 +1,29 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 5%;
+    bottom: 10%;
+    background-color: white;
+    border: 0px solid #ccc;
+    height: 80vh;
+    min-height: 400px;
+}
+
+.chat-container-embed{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh-button {
+    margin-top: 20px;
+}
+
+.button-space {
+    margin: 0 10px;
+  }
+  

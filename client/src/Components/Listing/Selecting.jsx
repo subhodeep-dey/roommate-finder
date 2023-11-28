@@ -5,10 +5,20 @@ import "../Cards/Cards.css";
 import "./Selecting.css";
 import Modal from "../../Components/Modal/Modal";
 import Modal2 from "../Modal/Modal2";
+import CircularProgress from "@mui/material/CircularProgress";
+import { toast } from "react-toastify";
 
 export const Listing = () => {
-  const { showModal, showModal2, selectRoommateDetail, selectRoomDetail } =
-    useContext(ListingContext);
+  const {
+    selectRoommateEmail,
+    selectRoommatePhone,
+    showModal,
+    showModal2,
+    selectRoommateDetail,
+    selectRoomDetail,
+    selectRoomEmail,
+    selectRoomPhone,
+  } = useContext(ListingContext);
 
   const profileData = JSON.parse(localStorage.getItem("profile"));
 
@@ -55,6 +65,14 @@ export const Listing = () => {
                   ...post,
                   userDetails,
                 };
+              })
+              .catch((error) => {
+                // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
+                console.log(
+                  `Error fetching user details for user ID ${post.userId}:`,
+                  error
+                );
+                return null;
               });
           }
         );
@@ -80,6 +98,14 @@ export const Listing = () => {
                 ...post,
                 userDetails,
               };
+            })
+            .catch((error) => {
+              // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
+              console.log(
+                `Error fetching user details for user ID ${post.userId}:`,
+                error
+              );
+              return null;
             });
         });
 
@@ -90,6 +116,7 @@ export const Listing = () => {
       })
       .catch((error) => {
         console.log(error);
+        return null;
       });
   }, []);
 
@@ -115,6 +142,7 @@ export const Listing = () => {
         setRoomPosts(roomData);
       } catch (error) {
         console.error(error);
+        return null;
       } finally {
         setIsLoading(false);
       }
@@ -127,12 +155,15 @@ export const Listing = () => {
     following.has(post._id)
   );
 
-  const matchingRoomData = roomPosts.filter((post) => likeRoom.has(post._id));
+  // const matchingRoomData = roomPosts.filter((post) => likeRoom.has(post._id));
+  const matchingRoomData = roomPosts
+  .filter((post) => post?.hasOwnProperty('_id') && likeRoom.has(post._id));
 
-  console.log("Following:", following);
-  console.log("Like Room:", likeRoom);
-  console.log("Roommate Posts:", matchingRoommateData);
-  console.log("MatchingRoom Posts:", matchingRoomData);
+
+  // console.log("Following:", following);
+  // console.log("Like Room:", likeRoom);
+  // console.log("Roommate Posts:", matchingRoommateData);
+  // console.log("MatchingRoom Posts:", matchingRoomData);
 
   return (
     <div className="listing">
@@ -146,7 +177,9 @@ export const Listing = () => {
       </div>
       <div className="tab-content">
         {isLoading ? (
-          <p>Loading...</p>
+          <div className="loading-indicator-container">
+            <CircularProgress disableShrink color="primary" size={40} />
+          </div>
         ) : (
           <div>
             {showModal && <Modal />}
@@ -156,12 +189,21 @@ export const Listing = () => {
                   <span className="cards">
                     <div className="main-card">
                       <div className="card-details">
-                        <div className="card-img"></div>
+                        <div
+                          className="card-img"
+                          style={{
+                            backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            // width: '132px',
+                            // height: '158px',
+                          }}
+                        ></div>
                         <div className="card-info">
                           <div className="card-informatios">
                             <div className="card-name">
-                              {item.userDetails.firstname ?? "Null_Fname"}{" "}
-                              {item.userDetails.lastname ?? "Null_Lname"}
+                              {item.userDetails.firstname ?? "Name"}{" "}
+                              {item.userDetails.lastname ?? "Loading..."}
                             </div>
                             <div className="card-add">
                               <img
@@ -219,10 +261,16 @@ export const Listing = () => {
                         <hr />
                       </div>
                       <div className="card-habits-section">
-                        <div className="card-habit">Habits</div>
+                        <div className="card-habit">
+                          For Description - Click on the button
+                        </div>
                         <div
                           className="card-habit-details"
-                          onClick={() => selectRoommateDetail(item.desc)}
+                          onClick={() => {
+                            selectRoommateDetail(item.desc);
+                            selectRoommatePhone(item.phone);
+                            selectRoommateEmail(item.username);
+                          }}
                         >
                           <div>
                             <img
@@ -245,11 +293,20 @@ export const Listing = () => {
                   <span className="cards">
                     <div className="main-card">
                       <div className="card-details">
-                        <div className="card-img"></div>
+                        <div
+                          className="card-img"
+                          style={{
+                            backgroundImage: `url('https://c4.wallpaperflare.com/wallpaper/40/849/87/anime-girls-wallpaper-preview.jpg')`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            // width: '132px',
+                            // height: '158px',
+                          }}
+                        ></div>
                         <div className="card-info">
                           <div className="card-informatios">
                             <div className="card-name">
-                              {item.preferredBlock}
+                              {item.preferredBlock ?? "Loading "} Block
                             </div>
                             <div className="card-add">
                               <img
@@ -303,10 +360,16 @@ export const Listing = () => {
                         <hr />
                       </div>
                       <div className="card-habits-section">
-                        <div className="card-habit">Leader</div>
+                        <div className="card-habit">
+                          For Description - Click on the button
+                        </div>
                         <div
                           className="card-habit-details"
-                          onClick={() => selectRoomDetail(item.desc)}
+                          onClick={() => {
+                            selectRoomDetail(item.desc);
+                            selectRoomPhone(item.phone);
+                            selectRoomEmail(item.username);
+                          }}
                         >
                           <div>
                             <img

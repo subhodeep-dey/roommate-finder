@@ -3,6 +3,7 @@ import axios from "axios";
 import "../Cards/Cards.css";
 import Modal from "../../Components/Modal/Modal";
 import { ListingContext } from "../../Context/listing-context";
+import { toast } from "react-toastify";
 
 function DisplayRoommateListingCard() {
   const { showModal, selectRoommateDetail } = useContext(ListingContext);
@@ -13,13 +14,13 @@ function DisplayRoommateListingCard() {
     const fetchData = async () => {
       try {
         const user_Id = profileData.user._id;
-        console.log("user_Id recorded:", user_Id);
+        // console.log("user_Id recorded:", user_Id);
 
         const requestData = {
           userId: user_Id,
         };
 
-        console.log("requestData:", requestData);
+        // console.log("requestData:", requestData);
 
         const response = await axios.post(
           `https://roommate-finder-theta.vercel.app/roommate/my/${user_Id}`,
@@ -27,7 +28,7 @@ function DisplayRoommateListingCard() {
         );
         setRoommates(response.data);
       } catch (error) {
-        console.error("Error fetching roommates:", error);
+        // console.error("Error fetching roommates:", error);
       }
     };
 
@@ -48,12 +49,13 @@ function DisplayRoommateListingCard() {
         }
       );
 
-      console.log("Roommate deleted:", response);
+      // console.log("Roommate deleted:", response);
+      toast.success("Roommate deleted successfully!");
       setRoommates((prevRoommates) =>
         prevRoommates.filter((roommate) => roommate._id !== roommate_id)
       );
     } catch (error) {
-      console.error("Error deleting roommate:", error);
+      // console.error("Error deleting roommate:", error);
     }
   };
 
@@ -65,10 +67,19 @@ function DisplayRoommateListingCard() {
           <span className="cards">
             <div className="main-card">
               <div className="card-details">
-                <div className="card-img"></div>
+              <div
+                className="card-img"
+                style={{
+                  backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  // width: '132px',
+                  // height: '158px',
+                }}
+              ></div>
                 <div className="card-info">
                   <div className="card-informatios">
-                    <div className="card-name">Name</div>
+                    <div className="card-name">Roommate Posting</div>
                     <div
                       className="card-add"
                       onClick={() => deleteRoommate(roommate._id)}
@@ -124,7 +135,7 @@ function DisplayRoommateListingCard() {
                 <hr />
               </div>
               <div className="card-habits-section">
-                <div className="card-habit">Habits</div>
+                <div className="card-habit">For Description - Click on the button</div>
                 <div
                   className="card-habit-details"
                   onClick={() => selectRoommateDetail(roommate.desc)}

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logIn } from "../../actions/AuthActions.js";
 import { useDispatch } from "react-redux";
+import { Helmet } from "react-helmet";
 
 let initialFormState = { email: "", password: "" };
 function SignIn() {
@@ -36,12 +37,28 @@ function SignIn() {
     });
   }
 
+  // function validateEmail(email) {
+  //   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  //   let isEmailValid = emailRegex.test(email);
+  //   if (!isEmailValid) {
+  //     setError((prev) => {
+  //       return { ...prev, email: "Please enter a valid email" };
+  //     });
+  //   } else {
+  //     setError((prev) => {
+  //       return { ...prev, email: null };
+  //     });
+  //   }
+  //   return isEmailValid;
+  // }
+
   function validateEmail(email) {
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    let isEmailValid = emailRegex.test(email);
+    const emailRegex = /^[A-Za-z0-9._%+-]+@vitstudent.ac.in$/;
+    const isEmailValid = emailRegex.test(email);
+  
     if (!isEmailValid) {
       setError((prev) => {
-        return { ...prev, email: "Please enter a valid email" };
+        return { ...prev, email: "Please enter a valid email in the format 'mfc@vitstudent.ac.in'" };
       });
     } else {
       setError((prev) => {
@@ -52,22 +69,47 @@ function SignIn() {
   }
 
   function validatePassword(password) {}
-  function signInClickHandler() {
+
+  async function signInClickHandler() {
     console.log("form", form);
     setForm(initialFormState);
-
+  
     let data = {
       username: form.email,
       password: form.password,
     };
-
-    dispatch(logIn(data, navigate));
-    // toast.success("You have succesfully signed in!");
-    // navigate("/home");
-  }
+  
+    try {
+      await dispatch(logIn(data, navigate));
+    } catch (error) {
+      //console.log(error.message);
+      if (error.message === "Email not verified") {
+        toast.error("Please verify your email.");
+        navigate("/resendVerificationMail");
+      } else { 
+        toast.error("An error occurred. Verify your email or check your credentials.");
+      }
+    }
+  }  
+  
   return (
     <div className="flex flex-col w-[100vw] h-[100vh]">
-      <Header />
+      <Helmet>
+        <script type="text/javascript">
+          {`
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+              s1.async=true;
+              s1.src='https://embed.tawk.to/65660e221db16644c5558560/1hgbaeehq';
+              s1.charset='UTF-8';
+              s1.setAttribute('crossorigin','*');
+              s0.parentNode.insertBefore(s1,s0);
+            })();
+          `}
+        </script>
+      </Helmet>
+      <Header /> 
       <div className="flex flex-grow h-auto">
         <div
           className="md:inline-block md:w-[45%] bg-cover bg-center"
@@ -83,15 +125,15 @@ function SignIn() {
             <p className="mb-5 text-[#3C4242] text-[14px] w-full">
               Sign in using your credentials
             </p>
-            <button className="flex justify-center items-center font-[600] text-[#06105A] w-[100%]  mr-2 rounded-[8px] border-[#06105A] border-[1.75px] px-[2rem] py-[0.75rem]">
+            {/* <button className="flex justify-center items-center font-[600] text-[#06105A] w-[100%]  mr-2 rounded-[8px] border-[#06105A] border-[1.75px] px-[2rem] py-[0.75rem]">
               <FcGoogle size={25} className="mr-2" /> Continue with Google
-            </button>
+            </button> */}
 
-            <div className="flex items-center w-full box-border mt-6 mb-8">
+            {/* <div className="flex items-center w-full box-border mt-6 mb-8">
               <div className="flex-grow h-[1px] bg-[#666666]"></div>
               <span className="text-[#666666] pl-2 pr-2">OR</span>
               <div className="flex-grow h-[1px] bg-[#666666]"></div>
-            </div>
+            </div> */}
 
             <div className="w-full mb-6">
               <span className="text-[#3C4242] text-[16px]">Email Address</span>

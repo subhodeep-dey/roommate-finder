@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 const Roompage = () => {
   const user = useSelector((state) => state.authReducer.authData);
-  console.log("user", user);
+  // console.log("user", user);
   return (
     <>
       <Navbar />

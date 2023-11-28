@@ -1,0 +1,108 @@
+.team-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 60px;
+  padding-top: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.teams-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 70px;
+  padding-top: 10px;
+  align-items: center;
+}
+.leads-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 60px;
+  margin-top: 20px;
+  align-items: center;
+}
+.teamlist {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+.leads {
+  max-width: 600px;
+
+  margin: auto;
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+.devs {
+  max-width: 900px;
+  margin: auto;
+  display: block;
+  justify-content: center;
+  align-items: center;
+}
+.leadslist {
+  place-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+.devlist {
+  place-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+.eachleads {
+  margin-bottom: 10px;
+}
+.eachdevs {
+  margin-bottom: 10px;
+}
+.team {
+  font-family: "Causten-SemiBold", Helvetica;
+  padding-bottom: 10px;
+  display: block;
+}
+.team {
+  font-family: "Causten-SemiBold", Helvetica;
+
+  display: block;
+}
+.team .activeteam {
+  height: 60px;
+  width: 180px;
+  border-bottom: 2px solid #000000;
+  color: #000000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.teamtab-hr {
+  margin-top: 10px;
+}
+.team-text {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-weight: bolder;
+  font-size: 32px;
+}
+.Inter-Regular {
+  font-family: Inter-Regular, Helvetica;
+}
+.Inter-Semi-Bold {
+  font-family: Inter-Semi-Bold, sans-serif;
+}
+@media screen and (max-width: 800px) {
+  .eachdevs {
+    margin-bottom: 30px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .eachleads {
+    margin-bottom: 30px;
+  }
+}
+
+.object-cover {
+  object-fit: cover;
+}
