@@ -14,6 +14,10 @@ const postSchema = mongoose.Schema(
       required: true
     },
     preferredBlock: String,
+    remaining: {
+      type: Number,
+      required: false
+    },
     phone: {
       type: Number,
       required: true
