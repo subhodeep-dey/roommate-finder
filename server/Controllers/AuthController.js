@@ -108,7 +108,9 @@ export const loginUser = async (req, res) => {
             process.env.JWTKEY,
             { expiresIn: "1h" }
           );
-          res.status(200).json({ user, token });
+          // Don't include the password in the response
+          const { password, ...userWithoutPassword } = user._doc;
+          res.status(200).json({ user: userWithoutPassword, token });
         }
       }
     } else {
