@@ -1,6 +1,8 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "private": true,
+  "proxy": "https://roommate-dhoondho.vercel.app",
   "description": "Roommate Finder Server",
   "main": "index.js",
   "type": "module",
