@@ -15,7 +15,7 @@ if(process.env.NODE_ENV === "production") {
 }
 
 // Routes
-const app = express(); 
+const app = express();
 
 
 // Middleware
