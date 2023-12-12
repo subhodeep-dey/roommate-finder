@@ -1,3 +1,4 @@
+import secureLocalStorage from "react-secure-storage";
 import {
   legacy_createStore as createStore,
   applyMiddleware,
@@ -9,19 +10,18 @@ import { reducers } from "../reducers";
 function saveToLocalStorage(store) {
   try {
       const serializedStore = JSON.stringify(store);
-      window.localStorage.setItem('store', serializedStore);
+      window.secureLocalStorage.setItem('store', serializedStore);
   } catch(e) {
-      console.log(e);
+    return undefined;
   }
 }
 
 function loadFromLocalStorage() {
   try {
-      const serializedStore = window.localStorage.getItem('store');
+      const serializedStore = window.secureLocalStorage.getItem('store');
       if(serializedStore === null) return undefined;
       return JSON.parse(serializedStore);
   } catch(e) {
-      console.log(e);
       return undefined;
   }
 }

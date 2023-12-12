@@ -29,11 +29,11 @@ const Cards = ({ item }) => {
                   <div className="card-preference-content">{rank}</div>
                 </div>
                 <div className="card-block">
-                  <div className="card-preference-title">Prefered Block</div>
+                  <div className="card-preference-title">Preferred Block</div>
                   <div className="card-preference-content">{block}</div>
                 </div>
                 <div className="card-bed">
-                  <div className="card-preference-title">Prefered Bed Type</div>
+                  <div className="card-preference-title">Preferred Bed Type</div>
                   <div className="card-preference-content">{bed}</div>
                 </div>
               </div>

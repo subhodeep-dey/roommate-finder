@@ -4,12 +4,21 @@ import Header from "../../Components/Header/Header";
 import { FcGoogle } from "react-icons/fc";
 import { BsEyeFill } from "react-icons/bs";
 import { BsEyeSlashFill } from "react-icons/bs";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signUp } from "../../actions/AuthActions.js";
 import { useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const signUpPage = '/signUp';
+Hotjar.stateChange(signUpPage);
 
 let initialFormState = { email: "", password: "", agree: false };
 let verifyInitialFormState = { code: "" };
@@ -47,13 +56,13 @@ function SignUP() {
     });
   }
 
-  function verifyFormOnChangeHandler(e) {
-    let change = {};
-    change[e.target.name] = e.target.value;
-    setVerifyForm((prev) => {
-      return { ...prev, ...change };
-    });
-  }
+  // function verifyFormOnChangeHandler(e) {
+  //   let change = {};
+  //   change[e.target.name] = e.target.value;
+  //   setVerifyForm((prev) => {
+  //     return { ...prev, ...change };
+  //   });
+  // }
 
   function validateEmail(email) {
     const emailRegex = /^[A-Za-z0-9._%+-]+@vitstudent.ac.in$/;
@@ -91,16 +100,6 @@ function SignUP() {
   }
 
   async function signUpClickHandler() {
-    setIsVerification(true);
-    let data = {
-      username: form.email,
-      password: form.password,
-    };
-    dispatch(signUp(data, navigate));
-    setForm(initialFormState);
-  }
-
-  async function signUpClickHandler() {
     const isEmailValid = validateEmail(form.email);
     const isPasswordValid = validatePassword(form.password);
     if (!isEmailValid) {
@@ -111,15 +110,19 @@ function SignUP() {
       toast.error("Password must be at least 8 characters long and include a mix of letters, numbers, and symbols.");
       return;
     }
-
-    let data = {
-      username: form.email,
-      password: form.password,
-    };
-    dispatch(signUp(data, navigate));
-    setForm(initialFormState);
+    try {
+      let data = {
+        username: form.email,
+        password: form.password,
+      };
+      dispatch(signUp(data, navigate));
+      setForm(initialFormState);
+    } catch (error) {
+      toast.error("Error L423. Something went wrong. Please try again.");
+      console.error(error);
+    } finally {
+    }
   }
-  
 
   function verifyCodeClickHandler() {
     console.log("verifyform", verifyForm);
@@ -133,12 +136,12 @@ function SignUP() {
           {`
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
-              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-              s1.async=true;
-              s1.src='https://embed.tawk.to/65660e221db16644c5558560/1hgbaeehq';
-              s1.charset='UTF-8';
-              s1.setAttribute('crossorigin','*');
-              s0.parentNode.insertBefore(s1,s0);
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/6567144e26949f791135dd26/1hgdael2d';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
             })();
           `}
         </script>
@@ -155,7 +158,7 @@ function SignUP() {
           {!isVerification ? (
             <div className="flex flex-col pt-[2rem] items-center w-[80%]">
               <h1 className="text-[#333] text-[1.75rem] font-[600] w-full">
-                Sign Up
+                Create New Account
               </h1>
               <p className="mb-5 text-[#3C4242] text-[14px] w-full">
                 Sign up for free to access Roommate Dhoondho
@@ -210,6 +213,7 @@ function SignUP() {
                   value={form.password}
                   onChange={formOnChangeHandler}
                   name="password"
+                  placeholder=""
                   type={showPassword ? "text" : "password"}
                   className="mt-2 rounded-[8px] border-[#3C4242] border-[1px] w-full p-[0.75rem] "
                 />
@@ -225,28 +229,29 @@ function SignUP() {
                 ) : null}
               </div>
 
-              <div className="flex items-center text-[#807D7E] text-[14px] w-full mb-10">
+              {/* <div className="flex items-center text-[#807D7E] text-[14px] w-full mb-10">
                 <input
                   name="agree"
                   checked={form.agree}
-                  onChange={(e) => formOnChangeHandler(e, !form.agree)}
+                  // onChange={(e) => formOnChangeHandler(e, !form.agree)}
                   className="mr-2"
                   type="checkbox"
                 />
                 <label>Agree to our Terms of use and Privacy Policy </label>
-              </div>
+              </div> */}
 
               <button
-                onClick={signUpClickHandler}
+                onClick={
+                  signUpClickHandler
+                }
                 disabled={
-                  formError.email || formError.password || !form.agree
+                  formError.email || formError.password || form.agree
                     ? true
                     : false
                 }
                 className="bg-[#06105A] px-[2rem] py-[0.75rem] text-white rounded-[8px] self-start disabled:hover:cursor-not-allowed"
               >
-                {" "}
-                Sign Up
+                Create Account
               </button>
               <span className="text-[#3C4242] text-[14px] mt-2 self-start">
                 Already have an account?{" "}
@@ -272,7 +277,7 @@ function SignUP() {
                 <input
                   name="code"
                   value={verifyForm.code}
-                  onChange={verifyFormOnChangeHandler}
+                  // onChange={verifyFormOnChangeHandler}
                   className=" mt-2 rounded-[8px] border-[#3C4242] border-[1px] w-full p-[0.75rem] "
                 />
               </div>
@@ -287,6 +292,17 @@ function SignUP() {
             </div>
           ) : null}
         </div>
+      </div>
+      <div>
+        <p>
+          <center>
+            <a href="https://vimeo.com/891016429" target="_blank">
+              How to use this app:{' '}
+              
+                Demo
+            </a>
+          </center>
+        </p>
       </div>
     </div>
   );

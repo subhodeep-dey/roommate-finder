@@ -188,7 +188,7 @@ const Team = () => {
                     Ayush Patil{" "}
                       <a
                         target="_blank"
-                        href="/"
+                        href="https://github.com/Ayush2948"
                       >
                         <small>
                           <i class="fas fa-external-link-alt"></i>
@@ -437,7 +437,7 @@ const Team = () => {
                       />
                     </a> */}
                     <a
-                      href="#twitter"
+                      href="https://instagram.com/_nitish_kumar48?igshid=MTNiYzNiMzkwZA=="
                       class="block font-sans text-xl antialiased font-normal leading-relaxed text-transparent bg-gradient-to-tr from-light-blue-600 to-light-blue-400 bg-clip-text"
                     >
                       <img
@@ -447,7 +447,7 @@ const Team = () => {
                       />
                     </a>
                     <a
-                      href="#instagram"
+                      href="https://www.linkedin.com/in/nitish445/"
                       class="block font-sans text-xl antialiased font-normal leading-relaxed text-transparent bg-gradient-to-tr from-purple-600 to-purple-400 bg-clip-text"
                     >
                       <img

@@ -29,7 +29,7 @@ const RoomCards = ({ item }) => {
                   <div className="card-preference-content">{rank2}</div>
                 </div>
                 <div className="card-block">
-                  <div className="card-preference-title">Prefered Bed</div>
+                  <div className="card-preference-title">Preferred Bed</div>
                   <div className="card-preference-content">{prefbed}</div>
                 </div>
                 <div className="card-bed">

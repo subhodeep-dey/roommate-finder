@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SignIn.css";
 import Header from "../../Components/Header/Header";
 import { FcGoogle } from "react-icons/fc";
@@ -10,6 +10,15 @@ import { toast } from "react-toastify";
 import { logIn } from "../../actions/AuthActions.js";
 import { useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
+import Alert from "@mui/material/Alert";
+import axios from "axios";
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const signInPage = '/';
+Hotjar.stateChange(signInPage);
 
 let initialFormState = { email: "", password: "" };
 function SignIn() {
@@ -18,6 +27,26 @@ function SignIn() {
   const [error, setError] = useState({ email: null, password: null });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [serverMessage, setServerMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/server-messages/sign-in-1`
+        );
+
+        if (response.data) {
+          setServerMessage(response.data);
+        }
+      } catch (error) {
+        // Handle errors if needed
+        console.error("Error fetching server message:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   function hideOnClickHandler() {
     setShowPassword((prev) => !prev);
@@ -87,7 +116,7 @@ function SignIn() {
         toast.error("Please verify your email.");
         navigate("/resendVerificationMail");
       } else { 
-        toast.error("An error occurred. Verify your email or check your credentials.");
+        toast.error("Wrong credentials. Try resetting your password.");
       }
     }
   }  
@@ -99,12 +128,12 @@ function SignIn() {
           {`
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
-              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-              s1.async=true;
-              s1.src='https://embed.tawk.to/65660e221db16644c5558560/1hgbaeehq';
-              s1.charset='UTF-8';
-              s1.setAttribute('crossorigin','*');
-              s0.parentNode.insertBefore(s1,s0);
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/6567144e26949f791135dd26/1hgdael2d';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
             })();
           `}
         </script>
@@ -120,7 +149,7 @@ function SignIn() {
         <div className="w-[100%] md:w-[55%] flex justify-center">
           <div className="flex flex-col pt-[2rem] items-center w-[80%]">
             <h1 className="text-[#333] text-[1.75rem] font-[600] w-full  ">
-              Sign In
+              Welcome Back
             </h1>
             <p className="mb-5 text-[#3C4242] text-[14px] w-full">
               Sign in using your credentials
@@ -172,6 +201,7 @@ function SignIn() {
                 value={form.password}
                 onChange={formOnChangeHandler}
                 type={showPassword ? "password" : ""}
+                placeholder=""
                 className="mt-2 rounded-[8px] border-[#3C4242] border-[1px] w-full p-[0.75rem] "
               />
               <Link className="ml-auto" to="/resetPassword">
@@ -187,16 +217,38 @@ function SignIn() {
               className="bg-[#06105A] px-[2rem] py-[0.75rem] text-white rounded-[8px] self-start disabled:hover:cursor-not-allowed"
             >
               {" "}
-              Sign In
+              Login
             </button>
+
             <span className="text-[#3C4242] text-[14px] mt-2 self-start">
               Don't have an account?{" "}
               <Link to="/signUp">
                 <span className="underline">Sign Up</span>
               </Link>
             </span>
+            <br />
+            <div>
+            {serverMessage && (
+              <Alert severity={serverMessage.severity || "info"}>
+                <strong>{serverMessage.title}</strong>
+                <br />
+                {serverMessage.desc}
+              </Alert>
+            )}
           </div>
-        </div>
+          </div>
+        </div>   
+      </div>
+      <div>
+        <p>
+          <center>
+            <a href="https://vimeo.com/891016429" target="_blank">
+              How to use this app:{' '}
+              
+                Demo
+            </a>
+          </center>
+        </p>
       </div>
     </div>
   );

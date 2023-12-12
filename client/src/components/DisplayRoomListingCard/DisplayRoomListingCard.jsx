@@ -4,16 +4,17 @@ import "../Cards/Cards.css";
 import { ListingContext } from "../../Context/listing-context";
 import Modal2 from "../Modal/Modal2";
 import { toast } from "react-toastify";
+import secureLocalStorage from "react-secure-storage";
 
 function DisplayRoomListingCard() {
-  const { showModal2, selectRoomDetail } = useContext(ListingContext);
-  const profileData = JSON.parse(localStorage.getItem("profile"));
+  const { showModal2, selectRoomDetail, selectRoomEmail, selectRoomPhone } = useContext(ListingContext);
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user_Id = profileData.user._id;
+        const user_Id = profileData?.user?._id;
         // console.log("user_Id recorded:", user_Id);
 
         const requestData = {
@@ -23,35 +24,35 @@ function DisplayRoomListingCard() {
         // console.log("requestData:", requestData);
 
         const response = await axios.post(
-          `https://roommate-finder-theta.vercel.app/room/my/${user_Id}`,
+          `${process.env.REACT_APP_SERVER_URL}/room/my/${user_Id}`,
           requestData
         );
         setRooms(response.data);
-        // console.log("Room Data:", response.data);
+        console.log("Room Data:", response.data);
       } catch (error) {
-        // console.error("Error fetching rooms:", error);
+        console.error("Error fetching rooms:", error);
       }
     };
 
     fetchData();
-  }, [profileData.user._id]);
+  }, [profileData?.user?._id]);
 
   const deleteRoom = async (room_id) => {
     try {
-      const user_Id = profileData.user._id;
+      const user_Id = profileData?.user?._id;
       const requestBody = {
         userId: user_Id,
       };
 
       const response = await axios.delete(
-        `https://roommate-finder-theta.vercel.app/room/${room_id}`,
+        `${process.env.REACT_APP_SERVER_URL}/room/${room_id}`,
         {
           data: requestBody,
         }
       );
         toast.success("Room deleted successfully!");
       // console.log("Room deleted:", response);
-      setRooms((prevRooms) => prevRooms.filter((room) => room._id !== room_id));
+      setRooms((prevRooms) => prevRooms.filter((room) => room?._id !== room_id));
     } catch (error) {
       // console.error("Error deleting room:", error);
     }
@@ -60,7 +61,7 @@ function DisplayRoomListingCard() {
     <>
       {showModal2 && <Modal2 />}
       {rooms.map((room) => (
-        <div className="each-card" key={room.id}>
+        <div className="each-card" key={room?.id}>
           <div className="cards">
             <div className="main-card">
               <div className="card-details">
@@ -76,10 +77,10 @@ function DisplayRoomListingCard() {
               ></div>
                 <div className="card-info">
                   <div className="card-informatios">
-                    <div className="card-name">{room.preferredBlock} Block Posting</div>
+                    <div className="card-name">Rank: {room?.rank} - {room?.preferredBlock} Block Posting</div>
                     <div
                       className="card-add"
-                      onClick={() => deleteRoom(room._id)}
+                      onClick={() => deleteRoom(room?._id)}
                     >
                       <img
                         src="./image/minus-icon.png"
@@ -91,32 +92,32 @@ function DisplayRoomListingCard() {
                   <div className="card-preference">
                     <div className="card-rank">
                       <div className="card-preference-title">Rank</div>
-                      <div className="card-preference-content">{room.rank}</div>
+                      <div className="card-preference-content">{room?.rank}</div>
+                    </div>
+                    <div className="card-bed">
+                      <div className="card-preference-title">Preferred bed</div>
+                      <div className="card-preference-content">
+                        {room?.preferredBed}
+                      </div>
                     </div>
                     <div className="card-block">
                       <div className="card-preference-title">
-                        Prefered Block
+                        Block
                       </div>
                       <div className="card-preference-content">
-                        {room.preferredBlock}
-                      </div>
-                    </div>
-                    <div className="card-bed">
-                      <div className="card-preference-title">Remaining</div>
-                      <div className="card-preference-content">
-                        {room.preferredBed}
+                        {room?.preferredBlock}
                       </div>
                     </div>
                   </div>
                   <div className="card-downers2">
                     <div className="card-year">
                       <div className="card-preference-title">Year</div>
-                      <div className="card-preference-Year">{room.year}</div>
+                      <div className="card-preference-Year">{room?.year}</div>
                     </div>
                     <div className="card-gender">
                       <div className="card-preference-title">Gender</div>
                       <div className="card-preference-Gender">
-                        {room.gender}
+                        {room?.gender}
                       </div>
                     </div>
                   </div>
@@ -129,7 +130,11 @@ function DisplayRoomListingCard() {
                 <div className="card-habit">For Description - Click on the button</div>
                 <div
                   className="card-habit-details"
-                  onClick={() => selectRoomDetail(room.desc)}
+                  onClick={() => {
+                    selectRoomDetail(room?.desc);
+                    selectRoomPhone(room?.phone);
+                    selectRoomEmail(room?.username);
+                  }}
                 >
                   <div>
                     <img

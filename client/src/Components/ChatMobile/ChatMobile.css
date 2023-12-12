@@ -10,6 +10,7 @@
     border: 0px solid #ccc;
     height: 80vh;
     min-height: 400px;
+    z-index: -1;
 }
 
 .chat-container-embed{
@@ -17,6 +18,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: -1;
 }
 
 .refresh-button {

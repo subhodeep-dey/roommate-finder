@@ -4,11 +4,14 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../../actions/AuthActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert } from "@mui/material";
+import { toast } from "react-toastify";
 import "./Navbar.css";
+import secureLocalStorage from "react-secure-storage";
 
 function Navbar() {
-  const profileData = JSON.parse(localStorage.getItem("profile")) || {};
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile")) || {};
   const isProfileSet = profileData && !!profileData.user?.firstname;
+  const isAdmin = profileData?.user?.isAdmin;
   const [navbar, setHeader] = useState("navbar");
   const navigate = useNavigate();
   const [click, setClick] = useState(false);
@@ -35,7 +38,7 @@ function Navbar() {
   const dispatch = useDispatch();
 
   const handleLogOut = () => {
-    localStorage.removeItem("profile");
+    secureLocalStorage.removeItem("profile");
     dispatch(logout());
     navigate("/");
   };
@@ -98,20 +101,22 @@ function Navbar() {
               </button>
             </NavLink>
             <li className="nav-item">
-            <NavLink to="/chat" className="nav-links" onClick={closeMobileMenu}>
-              <button className="chat">
-                {" "}
-                <span className="button_icon" onClick={handleClick}>
-                  <i
-                    className={
-                      click ? "fa-solid fa-comments blue" : "fa-solid fa-comments white"
-                    }
-                  />
-                  Chat
-                </span>
-              </button>
-            </NavLink>
-          </li>
+              { (
+                <NavLink to="/chat" className="nav-links" onClick={closeMobileMenu}>
+                  <button className="chat">
+                    {" "}
+                    <span className="button_icon" onClick={handleClick}>
+                      <i
+                        className={
+                          click ? "fa-solid fa-comments blue" : "fa-solid fa-comments white"
+                        }
+                      />
+                      Chat
+                    </span>
+                  </button>
+                </NavLink>
+              )}
+            </li>
           </li>
           <li className="nav-item">
             <Link
@@ -153,9 +158,11 @@ function Navbar() {
             </Link>
           </li>
           <li className="nav-item-mobile">
-            <Link to="/chatMobile" className="nav-links-mobile user" onClick={closeMobileMenu}>
-                  Chat
-            </Link>
+            { (
+              <Link to="/chatMobile" className="nav-links-mobile user" onClick={closeMobileMenu}>
+                Chat
+              </Link>
+            )}
           </li>
           <li className="nav-item-mobile">
             <Link

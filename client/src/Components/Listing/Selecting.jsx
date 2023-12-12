@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ListingContext } from "../../Context/listing-context.jsx";
 import "../Cards/Cards.css";
@@ -7,6 +8,14 @@ import Modal from "../../Components/Modal/Modal";
 import Modal2 from "../Modal/Modal2";
 import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
+import secureLocalStorage from "react-secure-storage";
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const selectionsPage = '/selections';
+Hotjar.stateChange(selectionsPage);
 
 export const Listing = () => {
   const {
@@ -20,19 +29,33 @@ export const Listing = () => {
     selectRoomPhone,
   } = useContext(ListingContext);
 
-  const profileData = JSON.parse(localStorage.getItem("profile"));
-
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
+  const navigate = useNavigate();
   const [following, setFollowing] = useState(new Set());
   const [likeRoom, setLikeRoom] = useState(new Set());
   const [roommatePosts, setRoommatePosts] = useState([]);
   const [roomPosts, setRoomPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  Hotjar.identify(profileData?.user?.username, {
+    first_name: profileData?.user?.firstname,
+    last_name: profileData?.user?.lastname,
+    gender: profileData?.user?.gender
+  });
+
+  useEffect(() => {
+    if (!profileData) {
+      console.error('Error accessing user profileData');
+      toast.error('Error L4597E. Please Sign In again.')
+      navigate("/");
+    }
+  }, [profileData, navigate]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://roommate-finder-theta.vercel.app/user/${profileData.user._id}`
+          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.user?._id}`
         );
 
         console.log("Profile fetched:", response.data);
@@ -48,16 +71,16 @@ export const Listing = () => {
     };
 
     fetchData();
-  }, [profileData.user._id]);
+  }, [profileData?.user?._id]);
   useEffect(() => {
     axios
-      .get("https://roommate-finder-theta.vercel.app/roommate/all")
+      .get(`${process.env.REACT_APP_SERVER_URL}/roommate/all`)
       .then((response) => {
         const roommatePostsWithUserDetailsPromises = response.data.map(
           (post) => {
             return axios
               .get(
-                `https://roommate-finder-theta.vercel.app/user/${post.userId}`
+                `${process.env.REACT_APP_SERVER_URL}/user/${post?.userId}`
               )
               .then((userResponse) => {
                 const userDetails = userResponse.data;
@@ -69,7 +92,7 @@ export const Listing = () => {
               .catch((error) => {
                 // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
                 console.log(
-                  `Error fetching user details for user ID ${post.userId}:`,
+                  `Error fetching user details for user ID ${post?.userId}:`,
                   error
                 );
                 return null;
@@ -87,11 +110,11 @@ export const Listing = () => {
       });
 
     axios
-      .get("https://roommate-finder-theta.vercel.app/room/all")
+      .get(`${process.env.REACT_APP_SERVER_URL}/room/all`)
       .then((response) => {
         const roomPostsWithUserDetailsPromises = response.data.map((post) => {
           return axios
-            .get(`https://roommate-finder-theta.vercel.app/user/${post.userId}`)
+            .get(`${process.env.REACT_APP_SERVER_URL}/user/${post?.userId}`)
             .then((userResponse) => {
               const userDetails = userResponse.data;
               return {
@@ -102,7 +125,7 @@ export const Listing = () => {
             .catch((error) => {
               // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
               console.log(
-                `Error fetching user details for user ID ${post.userId}:`,
+                `Error fetching user details for user ID ${post?.userId}:`,
                 error
               );
               return null;
@@ -124,8 +147,8 @@ export const Listing = () => {
     const fetchData = async () => {
       try {
         const [roommateResponse, roomResponse] = await Promise.all([
-          axios.get("https://roommate-finder-theta.vercel.app/roommate/all"),
-          axios.get("https://roommate-finder-theta.vercel.app/room/all"),
+          axios.get(`${process.env.REACT_APP_SERVER_URL}/roommate/all`),
+          axios.get(`${process.env.REACT_APP_SERVER_URL}/room/all`),
         ]);
 
         const roommateData = roommateResponse.data.map((post) => ({
@@ -152,12 +175,12 @@ export const Listing = () => {
   }, []);
 
   const matchingRoommateData = roommatePosts.filter((post) =>
-    following.has(post._id)
+    following.has(post?._id)
   );
 
-  // const matchingRoomData = roomPosts.filter((post) => likeRoom.has(post._id));
+  // const matchingRoomData = roomPosts.filter((post) => likeRoom.has(post?._id));
   const matchingRoomData = roomPosts
-  .filter((post) => post?.hasOwnProperty('_id') && likeRoom.has(post._id));
+  .filter((post) => post?.hasOwnProperty('_id') && likeRoom.has(post?._id));
 
 
   // console.log("Following:", following);
@@ -223,7 +246,7 @@ export const Listing = () => {
                             </div>
                             <div className="card-block">
                               <div className="card-preference-title">
-                                Prefered Block
+                                Preferred Block
                               </div>
                               <div className="card-preference-content">
                                 {" "}
@@ -232,7 +255,7 @@ export const Listing = () => {
                             </div>
                             <div className="card-bed">
                               <div className="card-preference-title">
-                                Prefered Bed Type
+                                Preferred Bed Type
                               </div>
                               <div className="card-preference-content">
                                 {" "}
@@ -243,7 +266,10 @@ export const Listing = () => {
                           <div className="card-downers">
                             <div className="card-year">
                               <div className="card-preference-title">Year</div>
-                              <div className="card-preference-Year">year</div>
+                              <div className="card-preference-content">
+                                {" "}
+                                {item.year}
+                              </div>
                             </div>
                             <div className="card-gender">
                               <div className="card-preference-title">
@@ -306,7 +332,7 @@ export const Listing = () => {
                         <div className="card-info">
                           <div className="card-informatios">
                             <div className="card-name">
-                              {item.preferredBlock ?? "Loading "} Block
+                            Rank: {item?.rank ?? ""} | {item?.preferredBlock ?? "Loading "} Block
                             </div>
                             <div className="card-add">
                               <img
@@ -325,7 +351,7 @@ export const Listing = () => {
                             </div>
                             <div className="card-block">
                               <div className="card-preference-title">
-                                Prefered Bed
+                                Preferred Bed
                               </div>
                               <div className="card-preference-content">
                                 {item.preferredBed}
@@ -333,17 +359,21 @@ export const Listing = () => {
                             </div>
                             <div className="card-bed">
                               <div className="card-preference-title">
-                                Remaining
+                                Vacancy
                               </div>
                               <div className="card-preference-content">
-                                remaining
+                                {" "}
+                                {item.remaining}
                               </div>
                             </div>
                           </div>
                           <div className="card-downers2">
                             <div className="card-year">
                               <div className="card-preference-title">Year</div>
-                              <div className="card-preference-Year">year</div>
+                              <div className="card-preference-content">
+                                {" "}
+                                {item.year}
+                              </div>
                             </div>
                             <div className="card-gender">
                               <div className="card-preference-title">

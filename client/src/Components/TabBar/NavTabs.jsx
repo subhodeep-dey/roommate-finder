@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import "./paginationStyles.css";
 import "../Cards/Cards.css";
@@ -12,10 +13,25 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
+import secureLocalStorage from "react-secure-storage";
+
+import Hotjar from "@hotjar/browser";
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const homePage = "/home";
+Hotjar.stateChange(homePage);
 
 function DisplayRoommateCard() {
-  const profileData = JSON.parse(localStorage.getItem("profile"));
+  const resetTabContent = () => {
+    // Reset the page state to 1 when changing tabs
+    setPage(1);
+    setResetPaginationKey((prevKey) => prevKey + 1);
+  };
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+
   const [showPlaceholder, setShowPlaceholder] = useState(false);
   const user = useSelector((state) => state.authReducer.authData);
   const [roommatePosts, setRoommatePosts] = useState([]);
@@ -40,7 +56,31 @@ function DisplayRoommateCard() {
     setResetPaginationKey((prevKey) => prevKey + 1);
   };
   const perPage = 9; // No of items to be displayed in a page
-  const userGenderAll = profileData.user.gender;
+
+  Hotjar.identify(profileData?.user?.username, {
+    first_name: profileData?.user?.firstname,
+    last_name: profileData?.user?.lastname,
+    gender: profileData?.user?.gender,
+  });
+
+  useEffect(() => {
+    if (!profileData) {
+      console.error("Error accessing user profileData");
+      toast.error("Error L1075A. Please Sign In again.");
+      navigate("/");
+    }
+  }, [profileData, navigate]);
+
+  let userGenderAll;
+  try {
+    userGenderAll = profileData?.user?.gender;
+  } catch (error) {
+    console.error("Error accessing user gender:", error);
+  }
+
+  const handleGoToProfile = () => {
+    navigate("/profile");
+  };
 
   const {
     addToCart2,
@@ -90,35 +130,34 @@ function DisplayRoommateCard() {
   useEffect(() => {
     const fetchRoommateAndRoomCards = async () => {
       try {
+        
         const roomLengthResponse = await axios.get(
-          `https://roommate-dhoondho-backend-test.vercel.app/room/all?gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
+          `${process.env.REACT_APP_SERVER_URL}/room/all?gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
         );
         const roomLengthPosts = roomLengthResponse.data;
 
         const roommateLengthResponse = await axios.get(
-          `https://roommate-dhoondho-backend-test.vercel.app/roommate/all?gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
+          `${process.env.REACT_APP_SERVER_URL}/roommate/all?gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
         );
         const roommateLengthPosts = roommateLengthResponse.data;
 
         console.log(roommateLengthPosts);
         // Fetch roommate posts in batches
         const roommateResponse = await axios.get(
-          `https://roommate-dhoondho-backend-test.vercel.app/roommate/all?page=${page}&limit=${perPage}&gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
+          `${process.env.REACT_APP_SERVER_URL}/roommate/all?page=${page}&limit=${perPage}&gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
         );
         const roommatePosts = roommateResponse.data;
 
         // Fetch room posts in batches
         const roomResponse = await axios.get(
-          `https://roommate-dhoondho-backend-test.vercel.app/room/all?page=${page}&limit=${perPage}&gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
+          `${process.env.REACT_APP_SERVER_URL}/room/all?page=${page}&limit=${perPage}&gender=${userGenderAll}&year=${selectedYear}&preferredBlock=${selectedBlock}&sort=${rankOrder}`
         );
         const roomPosts = roomResponse.data;
 
         const roommatePostsWithUserDetailsPromises = roommatePosts
           .map((post) => {
             return axios
-              .get(
-                `https://roommate-finder-theta.vercel.app/user/${post.userId}`
-              )
+              .get(`${process.env.REACT_APP_SERVER_URL}/user/${post?.userId}`)
               .then((userResponse) => {
                 const userDetails = userResponse.data;
                 return {
@@ -127,9 +166,8 @@ function DisplayRoommateCard() {
                 };
               })
               .catch((error) => {
-                // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
                 console.log(
-                  `Error fetching user details for user ID ${post.userId}:`,
+                  `Error fetching user details for user ID ${post?.userId}:`,
                   error
                 );
                 return null;
@@ -140,9 +178,7 @@ function DisplayRoommateCard() {
         const roomPostsWithUserDetailsPromises = roomPosts
           .map((post) => {
             return axios
-              .get(
-                `https://roommate-finder-theta.vercel.app/user/${post.userId}`
-              )
+              .get(`${process.env.REACT_APP_SERVER_URL}/user/${post?.userId}`)
               .then((userResponse) => {
                 const userDetails = userResponse.data;
                 return {
@@ -151,9 +187,8 @@ function DisplayRoommateCard() {
                 };
               })
               .catch((error) => {
-                // Handle 404 errors here, you can simply ignore the error and return null or any other default value.
                 console.log(
-                  `Error fetching user details for user ID ${post.userId}:`,
+                  `Error fetching user details for user ID ${post?.userId}:`,
                   error
                 );
                 return null;
@@ -169,6 +204,7 @@ function DisplayRoommateCard() {
 
         setRoommatePosts(roommatePostsWithUserDetails);
         setRoomPosts(roomPostsWithUserDetails);
+
         setroomLengthPosts(roomLengthPosts);
         setroommateLengthPosts(roommateLengthPosts);
         setIsLoading(false);
@@ -179,6 +215,8 @@ function DisplayRoommateCard() {
       } catch (error) {
         console.error(error);
         setIsLoading(false);
+      } finally {
+        setIsLoading(false); // Set loading back to false when all posts are fetched
       }
     };
 
@@ -192,10 +230,8 @@ function DisplayRoommateCard() {
   }, [page, selectedBlock, selectedYear, rankOrder]);
 
   const fetchFollowing = () => {
-    axios
-      .get(
-        `https://roommate-finder-theta.vercel.app/user/${profileData.user._id}`
-      )
+    return axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/user/${profileData?.user?._id}`)
       .then((response) => {
         console.log("Profile fetched:", response.data);
         const followingUserIds = response.data.likesRoommate;
@@ -233,7 +269,7 @@ function DisplayRoommateCard() {
   async function likeRoommate(otherUserId) {
     try {
       const usersResponse = await axios.get(
-        "https://roommate-finder-theta.vercel.app/roommate/all"
+        `${process.env.REACT_APP_SERVER_URL}/roommate/all`
       );
 
       const otherUserData = usersResponse.data.find(
@@ -249,14 +285,14 @@ function DisplayRoommateCard() {
             (userGender === "M" && otherUserGender === "M") ||
             (userGender === "F" && otherUserGender === "F")
           ) {
-            let myUserId = user?.user?._id;
+            let myUserId = profileData?.user?._id;
             let requestBody = {
               roommateId: otherUserId,
             };
 
             let result = await axios
               .put(
-                `https://roommate-finder-theta.vercel.app/user/${myUserId}/likesRoommate`,
+                `${process.env.REACT_APP_SERVER_URL}/user/${myUserId}/likesRoommate`,
                 requestBody
               )
               .catch((error) => {
@@ -297,7 +333,7 @@ function DisplayRoommateCard() {
   async function RoomLiking(otherRoomId) {
     try {
       const roomResponse = await axios.get(
-        "https://roommate-finder-theta.vercel.app/room/all"
+        `${process.env.REACT_APP_SERVER_URL}/room/all`
       );
 
       const roomDataResponse = roomResponse.data.find(
@@ -312,14 +348,14 @@ function DisplayRoommateCard() {
             (userGender === "M" && roomGender === "M") ||
             (userGender === "F" && roomGender === "F")
           ) {
-            let myUserId = user?.user?._id;
+            let myUserId = profileData?.user?._id;
             let requestBody = {
               roomId: otherRoomId,
             };
 
             let result = await axios
               .put(
-                `https://roommate-finder-theta.vercel.app/user/${myUserId}/likesroom`,
+                `${process.env.REACT_APP_SERVER_URL}/user/${myUserId}/likesroom`,
                 requestBody
               )
               .catch((error) => {
@@ -367,6 +403,7 @@ function DisplayRoommateCard() {
           selectedYear={selectedYear}
           rankOrder={rankOrder}
           blockOptions={blockOptions}
+          resetTabContent={resetTabContent} // Reseting the resetPagination function when changing tabs
         >
           <Tab label="Tab 1">
             {showModal && <Modal />}
@@ -378,135 +415,163 @@ function DisplayRoommateCard() {
               ) : showPlaceholder ? (
                 <div align="center">
                   <Alert severity="warning">
-                  Please complete your profile before using this application. If you have already completed the profile
-              and still see this message, please goto your profile and click on "Submit" button again.
+                    Please complete your profile before using this application.
+                    If you have already completed the profile and still see this
+                    message, please goto your profile and click on "Submit"
+                    button again.
                   </Alert>
                   <br />
                   <p>
                     If you face any problem, please report to us at
                     <br />
-                    mozillavit@gmail.com
+                    support@mozillavit.in
+                    <br />
+                    <br />
+                    <button
+                      onClick={handleGoToProfile}
+                      className="bg-[#140922] px-4 py-2 text-white rounded-md"
+                    >
+                      Profile
+                    </button>
+                    <br />
+                    <br />
                   </p>
                 </div>
               ) : (
-                roommatePosts.map((post) => (
-                  <div className="each-card" key={post.id}>
-                    <span className="cards">
-                      <div className="main-card">
-                        <div className="card-details">
-                          <div
-                            className="card-img"
-                            style={{
-                              backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                              // width: '132px',
-                              // height: '158px',
-                            }}
-                          ></div>
-                          <div className="card-info">
-                            <div className="card-informatios">
-                              <div className="card-name">
-                                {post.userDetails.firstname ?? "Null_Fname"}{" "}
-                                {post.userDetails.lastname ?? "Null_Lname"}
-                              </div>
-                              {userGender && (
-                                <div
-                                  className="card-add"
-                                  onClick={() =>
-                                    likeRoommate(post._id, post.gender)
-                                  }
-                                >
-                                  {following.includes(post._id) ? (
-                                    <img
-                                      src="./image/checkbox.png"
-                                      alt=""
-                                      style={{ height: "24px", width: "24px" }}
-                                    />
-                                  ) : (
-                                    <img
-                                      src="./image/add-icon.png"
-                                      alt=""
-                                      style={{ height: "24px", width: "24px" }}
-                                    />
-                                  )}
+                roommatePosts.map((post) =>
+                (
+                    <div className="each-card" key={post?.id}>
+                      <span className="cards">
+                        <div className="main-card">
+                          <div className="card-details">
+                            <div
+                              className="card-img"
+                              style={{
+                                backgroundImage: `url('https://static01.nyt.com/images/2020/04/19/magazine/19Ethicist/19Ethicist-jumbo.jpg')`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                // width: '132px',
+                                // height: '158px',
+                              }}
+                            ></div>
+                            <div className="card-info">
+                              <div className="card-informatios">
+                                <div className="card-name">
+                                  {post?.userDetails.firstname ?? "Arjun"}{" "}
+                                  {post?.userDetails.lastname ?? "Sharma"}
                                 </div>
-                              )}
+                                {userGender && (
+                                  <div
+                                    className="card-add"
+                                    onClick={() =>
+                                      likeRoommate(post?._id, post?.gender)
+                                    }
+                                  >
+                                    {following.includes(post?._id) ? (
+                                      <img
+                                        src="./image/checkbox.png"
+                                        alt=""
+                                        style={{
+                                          height: "24px",
+                                          width: "24px",
+                                        }}
+                                      />
+                                    ) : (
+                                      <img
+                                        src="./image/add-icon.png"
+                                        alt=""
+                                        style={{
+                                          height: "24px",
+                                          width: "24px",
+                                        }}
+                                      />
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="card-preference">
+                                <div className="card-rank">
+                                  <div className="card-preference-title">
+                                    Rank
+                                  </div>
+                                  <div className="card-preference-content">
+                                    {post?.rank}
+                                  </div>
+                                </div>
+                                {/* <div className="card-block">
+                                  <div className="card-preference-title">
+                                    Preferred Block
+                                  </div>
+                                  <div className="card-preference-content">
+                                    {post?.preferredBlock}
+                                  </div>
+                                </div> */}
+                                <div className="card-bed">
+                                  <div className="card-preference-title">
+                                    Preferred Bed Type
+                                  </div>
+                                  <div className="card-preference-content">
+                                    {post?.preferredBed}
+                                  </div>
+                                </div>
+                                <div className="card-bed">
+                                  <div className="card-preference-title">
+                                    Vacancy
+                                  </div>
+                                  <div className="card-preference-content">
+                                    {post?.remaining}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="card-downers">
+                                <div className="card-year">
+                                  <div className="card-preference-title">
+                                    Year
+                                  </div>
+                                  <div className="card-preference-Year">
+                                    {post?.year}
+                                  </div>
+                                </div>
+                                <div className="card-gender">
+                                  <div className="card-preference-title">
+                                    Gender
+                                  </div>
+                                  <div className="card-preference-Gender">
+                                    {post?.gender}
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            <div className="card-preference">
-                              <div className="card-rank">
-                                <div className="card-preference-title">
-                                  Rank
-                                </div>
-                                <div className="card-preference-content">
-                                  {post.rank}
-                                </div>
-                              </div>
-                              <div className="card-block">
-                                <div className="card-preference-title">
-                                  Prefered Block
-                                </div>
-                                <div className="card-preference-content">
-                                  {post.preferredBlock}
-                                </div>
-                              </div>
-                              <div className="card-bed">
-                                <div className="card-preference-title">
-                                  Prefered Bed Type
-                                </div>
-                                <div className="card-preference-content">
-                                  {post.preferredBed}
-                                </div>
-                              </div>
+                          </div>
+                          <div className="card-hr">
+                            <hr />
+                          </div>
+                          <div className="card-habits-section">
+                            <div className="card-habit">
+                              For Description - Click on the button
                             </div>
-                            <div className="card-downers">
-                              <div className="card-year">
-                                <div className="card-preference-title">
-                                  Year
-                                </div>
-                                <div className="card-preference-Year">
-                                  {post.year}
-                                </div>
-                              </div>
-                              <div className="card-gender">
-                                <div className="card-preference-title">
-                                  Gender
-                                </div>
-                                <div className="card-preference-Gender">
-                                  {post.gender}
-                                </div>
+                            <div
+                              className="card-habit-details"
+                              onClick={() => {
+                                selectRoommateDetail(post?.desc);
+                                selectRoommatePhone(post?.phone);
+                                selectRoommateEmail(post?.username);
+                              }}
+                            >
+                              <div className="detail-box">
+                                <img
+                                  src="./image/desc.png"
+                                  alt=""
+                                  style={{ height: "18px", width: "18px" }}
+                                />
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="card-hr">
-                          <hr />
-                        </div>
-                        <div className="card-habits-section">
-                          <div className="card-habit">
-                            For Description - Click on the button
-                          </div>
-                          <div
-                            className="card-habit-details"
-                            onClick={() => {
-                              selectRoommateDetail(post.desc);
-                              selectRoommatePhone(post.phone);
-                              selectRoommateEmail(post.username);
-                            }}
-                          >
-                            <div className="detail-box">
-                              <img
-                                src="./image/desc.png"
-                                alt=""
-                                style={{ height: "18px", width: "18px" }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </span>
-                  </div>
-                ))
+                      </span>
+                    </div>
+                  )
+                )
               )}
             </div>
             <div
@@ -537,7 +602,7 @@ function DisplayRoommateCard() {
                     console.log("Page changed to:", selected.selected + 1);
                     setPage(selected.selected + 1);
                   } catch (error) {
-                    console.error('Error fetching data:', error);
+                    console.error("Error fetching data:", error);
                   } finally {
                     // Set loading back to false when data has been fetched (whether successful or not)
                     setIsLoading(false);
@@ -558,8 +623,6 @@ function DisplayRoommateCard() {
                 }
               />
             </div>
-
-
           </Tab>
           <Tab label="Tab 2">
             {showModal2 && <Modal2 />}
@@ -571,19 +634,31 @@ function DisplayRoommateCard() {
               ) : showPlaceholder ? (
                 <div align="center">
                   <Alert severity="warning">
-                  Please complete your profile before using this application. If you have already completed the profile
-              and still see this message, please goto your profile and click on "Submit" button again.
+                    Please complete your profile before using this application.
+                    If you have already completed the profile and still see this
+                    message, please goto your profile and click on "Submit"
+                    button again.
                   </Alert>
                   <br />
                   <p>
                     If you face any problem, please report to us at
                     <br />
-                    mfc.sdeysocial@dewdata.com
+                    support@mozillavit.in
+                    <br />
+                    <br />
+                    <button
+                      onClick={handleGoToProfile}
+                      className="bg-[#140922] px-4 py-2 text-white rounded-md"
+                    >
+                      Profile
+                    </button>
+                    <br />
+                    <br />
                   </p>
                 </div>
               ) : (
                 roomPosts.map((post) => (
-                  <div div className="each-card" key={post.id}>
+                  <div div className="each-card" key={post?.id}>
                     <span className="cards">
                       <div className="main-card">
                         <div className="card-details">
@@ -600,15 +675,15 @@ function DisplayRoommateCard() {
                           <div className="card-info">
                             <div className="card-informatios">
                               <div className="card-name">
-                                {post.preferredBlock} Block
+                              Rank: {post?.rank} - {post?.preferredBlock} Block
                               </div>
                               <div
                                 className="card-add"
                                 onClick={() =>
-                                  RoomLiking(post._id, post.gender)
+                                  RoomLiking(post?._id, post?.gender)
                                 }
                               >
-                                {likeRoom.includes(post._id) ? (
+                                {likeRoom.includes(post?._id) ? (
                                   <img
                                     src="./image/checkbox.png"
                                     alt=""
@@ -629,23 +704,23 @@ function DisplayRoommateCard() {
                                   Rank
                                 </div>
                                 <div className="card-preference-content">
-                                  {post.rank}
+                                  {post?.rank}
                                 </div>
                               </div>
                               <div className="card-block">
                                 <div className="card-preference-title">
-                                  Prefered Bed
+                                Preferred Bed
                                 </div>
                                 <div className="card-preference-content">
-                                  {post.preferredBed}
+                                  {post?.preferredBed}
                                 </div>
                               </div>
                               <div className="card-bed">
                                 <div className="card-preference-title">
-                                  Vacancy
+                                  Block
                                 </div>
                                 <div className="card-preference-content">
-                                  {post.remaining}
+                                  {post?.preferredBlock}
                                 </div>
                               </div>
                             </div>
@@ -655,7 +730,7 @@ function DisplayRoommateCard() {
                                   Year
                                 </div>
                                 <div className="card-preference-Year">
-                                  {post.year}
+                                  {post?.year}
                                 </div>
                               </div>
                               <div className="card-gender">
@@ -663,7 +738,7 @@ function DisplayRoommateCard() {
                                   Gender
                                 </div>
                                 <div className="card-preference-Gender">
-                                  {post.gender}
+                                  {post?.gender}
                                 </div>
                               </div>
                             </div>
@@ -679,9 +754,9 @@ function DisplayRoommateCard() {
                           <div
                             className="card-habit-details"
                             onClick={() => {
-                              selectRoomDetail(post.desc);
-                              selectRoomPhone(post.phone);
-                              selectRoomEmail(post.username);
+                              selectRoomDetail(post?.desc);
+                              selectRoomPhone(post?.phone);
+                              selectRoomEmail(post?.username);
                             }}
                           >
                             <div>
@@ -715,7 +790,7 @@ function DisplayRoommateCard() {
               <ReactPaginate
                 activeClassName="active-pagination-button bg-purple text-blue"
                 key={resetPaginationKey}
-                pageCount={totalPagesroommate}
+                pageCount={totalPages}
                 pageRangeDisplayed={5}
                 marginPagesDisplayed={2}
                 onPageChange={async (selected) => {
@@ -727,7 +802,7 @@ function DisplayRoommateCard() {
                     console.log("Page changed to:", selected.selected + 1);
                     setPage(selected.selected + 1);
                   } catch (error) {
-                    console.error('Error fetching data:', error);
+                    console.error("Error fetching data:", error);
                   } finally {
                     // Set loading back to false when data has been fetched (whether successful or not)
                     setIsLoading(false);
@@ -762,8 +837,8 @@ class Tabs extends Component {
 
   changeTab = (tab) => {
     this.setState({ activeTab: tab });
+    this.props.resetTabContent(); // Call the resetPagination function when changing tabs
   };
-
   render() {
     let content;
     let buttons = [];
@@ -827,14 +902,14 @@ const TabButtons = ({
                     <span className="tab-elements">
                       <div className="roomate-icon">
                         <img src="./image/roommatesicon.png" alt="" />
-                        <div className="tab-text">Roommates Listing</div>
+                        <div className="tab-text">Need Roommate</div>
                       </div>
                     </span>
                   ) : (
                     <span className="tab-elements">
                       <div className="roomate-icon">
                         <img src="./image/bed2.png" alt="" />
-                        <div className="tab-text">Rooms Listing</div>
+                        <div className="tab-text">Need Room</div>
                       </div>
                     </span>
                   )}
@@ -846,14 +921,14 @@ const TabButtons = ({
                       <div className="roomate-icon">
                         <img src="./image/roommatesicon2.png" alt="" />
                       </div>
-                      <div className="tab-text"> Need Roommates</div>
+                      <div className="tab-text">Need Roommate</div>
                     </span>
                   ) : (
                     <span className="tab-elements">
                       <div className="roomate-icon">
                         <img src="./image/bed.png" alt="" />
                       </div>
-                      <div className="tab-text">Need Rooms</div>
+                      <div className="tab-text">Need Room</div>
                     </span>
                   )}
                 </React.Fragment>

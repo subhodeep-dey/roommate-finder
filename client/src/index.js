@@ -24,11 +24,22 @@ import Terms from "./Pages/Terms/Terms";
 import Privacy from "./Pages/PrivacyPolicy/Privacy";
 import Team from "./Pages/Team/Team";
 import AboutMFC from "./Pages/AboutMFC/AboutMFC";
-
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+import secureLocalStorage from "react-secure-storage";
+import setAuthToken from "./actions/setAuthToken";
+import ReactGA from 'react-ga4';
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+
+const MeasurementId = "G-R2PCM7R0D1";
+ReactGA.initialize(MeasurementId);
+
 console.log(
-  "%cDear Developer,\n" +
-  "Thanks for stopping by the console log. If you've stumbled upon any bugs, please report them at %chttps://sdeysocial.canny.io/issue%c. Together, let's keep this code shipshape for our fellow VITians.\n" +
+  "Dear Developer,\n" +
+  "Thanks for stopping by the console log. If you've stumbled upon any bugs, please report them at https://sdeysocial.canny.io/issue. Together, let's keep this code shipshape for our fellow VITians.\n" +
   "Best Regards,\n" +
   "MFC VIT Team\n\n"+
   "    .---.\n" +
@@ -37,72 +48,8 @@ console.log(
   "  //   \\ \\\n" +
   " (|     | )\n" +
   "/'\_   _/`\\\n" +
-  " \___)=(___/",
-  "color: yellow; font-weight: bold;",
-  "color: yellow; text-decoration: underline;",
-  "color: yellow; font-weight: bold;",
+  " \___)=(___/"
 );
-
-
-// console.log(
-//   "  __  __ ______ _____  __      _______ _______ \n" +
-//   " |  \\/  |  ____/ ____| \\ \\    / /_   _|__   __|\n" +
-//   " | \\  / | |__ | |       \\ \\  / /  | |    | |   \n" +
-//   " | |\\/| |  __|| |        \\ \\/ /   | |    | |   \n" +
-//   " | |  | | |   | |____     \\  /   _| |_   | |   \n" +
-//   " |_|  |_|_|    \\_____|     \\/   |_____|  |_|   \n" +
-//   "                                               \n" +
-//   "                                               "
-// );
-
-console.log(
-  "                                                                                           \n" +
-  "                                  .:==+*###%%%%%##**+=-:.                                  \n" +
-  "                            .=+#%@@@@@@@@@@%%%%%@@@@@@@@@@@#+-.                            \n" +
-  "                        :=#@@@@@@#+=-:.             .:+#%@@@@@@@#+:                        \n" +
-  "         .+#+        -*@@@@@*=:                      #@@@@@@@@@@@@@@*-.                    \n" +
-  "        -@@@@*    -#@@@@#=:         .:.               -=+*#@@@@@@@@@@@@#=.                 \n" +
-  "       :@@@@@@. -@@@@@+.        :*%@@@@%                   -%@@@@%-+%@@@@@#:               \n" +
-  "       #@@%@@@*#@@@#=.      .=#@@@@@@@%=                 +@@@@@@@@=  .:+%@@@#= ::          \n" +
-  "      =@@% +@@@@@#=-=====-=#@@@@@@@@%-                    =*%@@@@@*-     :*@@@@@@%-        \n" +
-  "     .@@@+  =%@@@@@@@@@@@@@@@*-%@@@=                         .-+%@@@@#+.   .#@@@@@@+       \n" +
-  "     *@@@:    -*#*+-:::::-=-  #@@@:                               -*@@@@#-   :%@@@@@%.     \n" +
-  "     %@@@.                    @@@%=                                  -*@@@%:  :@@@@@@*     \n" +
-  "     @@@@                     :@@@@%:                                  .@@@@.  =@@@@@@.    \n" +
-  "    -@@@%                       -#@@@%%##*+.                            .#@@@:  :::@@@%    \n" +
-  "   +@@@#                          :+#%@@@@@@.                          %@@@@@%     *@@@:   \n" +
-  "  *@@@+                              :+#@@@=                           *@@@@@@     .@@@+   \n" +
-  " #@@%.                             =%@@@@+.                            :@@@%*-      *@@@%:  \n" +
-  "*@@@%*:                          -@@@%+:                                %@@*        -@@@@*  \n" +
-  "@@@@@@+                          -@@@=                                  #@@*        .@@@@%  \n" +
-  "=@@@@%                            *@@%                                . #@@*         %@@@@% \n" +
-  " .@@@:                     :*%%%#**@@@                              =@@%%@@+          -@@@   \n" +
-  " +@@#                     =@@@%@@@@@@%                              =@@@@@@=          =@@%   \n" +
-  " %@@*                     #@@%.   .:-.                              -@@@@@@.          %@@*   \n" +
-  " @@@+                     .#@@@*-           .::::.                  -@@@@@*          :@@@-  \n" +
-  " %@@*                       :#@@@%+:    :+#@@@@@@@@#=               -@@@=.           *@@%   \n" +
-  " *@@#                         -%@@@@@@@@@@@@@#**#@@@@@:             +@@@.            @@@-   \n" +
-  " :@@@                           .=#@@@@@%*=.    .=%@@@%             #@@%            #@@%   \n" +
-  "  %@@+                                       :=#@@@@@@*         =%@%@@+           #@@@-   \n" +
-  "  =@@@=                                  :=*@@@@@+:::.        :#@@@@@@@.          =@@@+    \n" +
-  "   #@@@:                       -*####%%@@@@@@#+:            .*@@@@@@@#.          -@@@*     \n" +
-  "    %@@%                       +@@@@@@%#*+-.              :*@@@@@@@@*           -@@@%      \n" +
-  "    :@@@@.                       =%@@@%*=:            .-*@@@@*::%@#:           -@@@+       \n" +
-  "     :@@@%                         :#@@@@@@%*=--::-=*%@@@@@*.                 -@@@*        \n" +
-  "      .%@@%:                         .-+#@@@@@@@@@@@@@@%*-.                  -@@@*         \n" +
-  "        *@@@=                              :-===++==-:                     :%@@@=          \n" +
-  "         -@@@@=                                                           +@@@%.           \n" +
-  "           *@@@%-                                                       =%@@%+             \n" +
-  "            .+@@@%=                                                  .=%@@@=               \n" +
-  "              .#@@@@*.                                              +@@@@#                 \n" +
-  "                :*@@@@#=.                                       .:*@@@@#:                  \n" +
-  "                   =*@@@@@*=.                                :+%@@@@#-.                    \n" +
-  "                      :+%@@@@@%*+-:.                  .:-+*%@@@@%*-                        \n" +
-  "                          :=*%@@@@@@@@%##***++***##%%@@@@@@@#+-.                           \n" +
-  "                               .:=+*#%%@@@@@@@@@@@@@%#*+=:.                                \n" +
-  "                                             .                                            \n"
-);
-
 
 if(process.env.NODE_ENV === "production") {
   disableReactDevTools();
@@ -183,7 +130,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/chat",
-    element: <Chat />,
+    element: <ChatMobile />,
   },
   {
     path: "/chatMobile",
@@ -207,7 +154,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+const profile = JSON.parse(secureLocalStorage.getItem('profile'));
+if(profile){
+  const token = profile?.token;
+  setAuthToken(token);
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <>
     <Provider store={store}>

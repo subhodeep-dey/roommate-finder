@@ -6,6 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from 'react-router-dom';
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -15,10 +16,21 @@ import Navbar from "../NavBar/Navbar";
 import Footer from "../Footer/Footer";
 import DisplayRoommateListingCard from "../DisplayRoommateListingCard/DisplayRoommateListingCard";
 import DisplayRoomListingCard from "../DisplayRoomListingCard/DisplayRoomListingCard";
+import { logout } from "../../actions/AuthActions";
 import { toast } from "react-toastify";
+import secureLocalStorage from "react-secure-storage";
+
+import Hotjar from '@hotjar/browser';
+import { Helmet } from "react-helmet";
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const profilePage = '/profile';
+Hotjar.stateChange(profilePage);
 
 const Profilepage = () => {
-  const profileData = JSON.parse(localStorage.getItem("profile"));
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
+  const navigate = useNavigate();
   const [additionalData, setAdditionalData] = useState({});
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -31,11 +43,65 @@ const Profilepage = () => {
   const [notification, setNotification] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [formEvent, setFormEvent] = useState(null);
-  const [showInfoLabel, setShowInfoLabel] = useState(true);
+  const [showInfoLabel, setShowInfoLabel] = useState(false);
   const [isGenderEditable, setIsGenderEditable] = useState(
-    profileData.user.gender === null
+    profileData?.user?.gender === null
   );
+  // const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isListingButtonActive, setIsListingButtonActive] = useState(false);
+  const [serverMessage, setServerMessage] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/server-messages/profile-yourlisting-1`
+        );
+
+        if (response.data) {
+          setServerMessage(response.data);
+        }
+      } catch (error) {
+        // Handle errors if needed
+        console.error("Error fetching server message:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Constants for preventing XSS Attacks
+
+
+  Hotjar.identify(profileData?.user?.username, {
+    first_name: profileData?.user?.firstname,
+    last_name: profileData?.user?.lastname,
+    gender: profileData?.user?.gender
+  });
+
+  useEffect(() => {
+    if (!profileData) {
+      console.error('Error accessing user profileData');
+      toast.error('Error L4781C. Please Sign In again.')
+      navigate("/");
+    }
+  }, [profileData, navigate]);
+
+  // const handleChangePassword = (e) => {
+  //   setPassword(e.target.value);
+  // };
+
+  // const validatePassword = () => {
+  //   return !!password;
+  // };
+
+  // const dispatch = useDispatch();
+  // const handleResetPasswordClick = () => {
+  //   secureLocalStorage.removeItem("profile");
+  //   dispatch(logout());
+  //   navigate('/resetPassword');
+  // };
 
   const handleConfirmationOpen = (e) => {
     e.preventDefault();
@@ -49,14 +115,18 @@ const Profilepage = () => {
     if (confirmed && formEvent && gender) {
       submituserRegistrationForm(formEvent, gender);
     }
-  };  
+  };
+  
+  const handleListingButtonClick = () => {
+    navigate('/need');
+  };
 
   console.log("user specific data: ", profileData);
 
   useEffect(() => {
     axios
       .get(
-        `https://roommate-finder-theta.vercel.app/user/${profileData.user._id}`
+        `${process.env.REACT_APP_SERVER_URL}/user/personal/${profileData?.user?._id}`
       )
       .then((response) => {
         const data = response.data;
@@ -179,23 +249,28 @@ const Profilepage = () => {
 
   const submituserRegistrationForm = (e, gender) => {
     e.preventDefault();
-    console.log("submitting form", gender);
+    // if (!validatePassword()) {
+    //   toast.error("Please enter your password for confirmation.");
+    //   return;
+    // }
+    console.log("submitting form gender", gender);
     if (validateForm()) {
       const updatedData = {
-        currentUserId: profileData.user._id,
-        username: email,
+        currentUserId: profileData?.user?._id,
+        // password: password,
+        // username: email,
         firstname: firstName,
         lastname: lastName,
         regnum: regnum,
         gender: gender,
         rank: rank,
         mobile: contactNumber,
-        currentUserAdminStatus: false,
+        // currentUserAdminStatus: false,
       };
 
       axios
         .put(
-          `https://roommate-finder-theta.vercel.app/user/${profileData.user._id}`,
+          `${process.env.REACT_APP_SERVER_URL}/user/${profileData?.user?._id}`,
           updatedData
         )
         .then((response) => {
@@ -203,16 +278,17 @@ const Profilepage = () => {
           setChangesMade(true);
           toast.success("Changes saved successfully!");
           // setNotification("Changes saved successfully!");
-          const updatedProfileData = { ...profileData, user: response.data };
-          localStorage.setItem("profile", JSON.stringify(updatedProfileData));
-          window.location.reload();
+          secureLocalStorage.setItem("profile", JSON.stringify(response.data));
+          // window.location.reload();
+          navigate('/home');
         })
         .catch((error) => {
           console.error("Error updating profile:", error);
-          setNotification("Error saving changes. Please try again.");
+          toast.error("Error saving changes. Please try again.");
         });
     }
   };
+
   return (
     <>
       <div>
@@ -391,17 +467,16 @@ const Profilepage = () => {
                       <div className="form-section-2">
                         <div className="form-section-2a">
                           <label>Email*</label>
-                          <div
+                          <input
+                            type="label"
                             name="emailid"
-                            style={{
-                              backgroundColor: 'white',
-                              padding: '8px',
-                              border: '1px solid #000000',
-                              borderRadius: '8px',
+                            value={email}
+                            onChange={(e) => {
+                              // handleChange(e);
+                              // setEmail(e.target.value);
+                              setChangesMade(true);
                             }}
-                          >
-                            {email}
-                          </div>
+                          />
                           {/* <div className="errorMsg">{errors.emailid}</div> */}
                         </div>
                         <div className="form-section-2b">
@@ -418,6 +493,20 @@ const Profilepage = () => {
                           />
                           <div className="errorMsg">{errors.mobileno}</div>
                         </div>
+                        {/* <div className="form-section-6">
+                          <label>Password*</label>
+                          <input
+                            type="password"
+                            name="password"
+                            value={password}
+                            onChange={handleChangePassword}
+                          />
+                          <div className="handlereset">
+                            <span onClick={handleResetPasswordClick}>
+                              Reset Password
+                            </span>
+                          </div>
+                        </div> */}
                       </div>
                       <div className="form-section-4">
                         {changesMade && (
@@ -450,6 +539,17 @@ const Profilepage = () => {
             <div className="listing-buttons">
               <button className="activelisting">
                 <p className="listing-text">Your Listing</p>
+                {/* <div className="add-button">
+                  <button
+                    className={`add-button-inner ${isListingButtonActive ? 'active' : ''}`}
+                    onClick={handleListingButtonClick}
+                    onMouseDown={() => setIsListingButtonActive(true)}
+                    onMouseUp={() => setIsListingButtonActive(false)}
+                    onMouseLeave={() => setIsListingButtonActive(false)}
+                  >
+                    +
+                  </button>
+                </div> */}
               </button>
             </div>
             <div className="tab-content">
@@ -458,9 +558,29 @@ const Profilepage = () => {
                 <DisplayRoomListingCard />
               </div>
             </div>
+            {serverMessage && (
+            <Alert severity={serverMessage.severity || "info"}>
+              <strong>{serverMessage.title}</strong>
+              <br />
+              {serverMessage.desc}
+            </Alert>
+          )}
           </div>
         </div>
       )}
+      
+      <div>
+        <p>
+          <center>
+            <a href="https://vimeo.com/891016429" target="_blank">
+              How to use this app:{' '}
+              
+                Demo
+            </a>
+          </center>
+        </p>
+      </div>
+
       <div>
         <Footer />
       </div>

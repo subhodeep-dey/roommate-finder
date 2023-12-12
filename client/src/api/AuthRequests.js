@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-const API = axios.create({ baseURL: 'https://roommate-finder-theta.vercel.app/' });
+const API = axios.create({ baseURL: `${process.env.REACT_APP_SERVER_URL}/` });
 
 export const logIn= (formData)=> API.post('/auth/login',formData);
 

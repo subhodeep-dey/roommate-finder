@@ -5,8 +5,14 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Header from "../../Components/Header/Header";
-
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const updatePasswordPage = '/updatePassword';
+Hotjar.stateChange(updatePasswordPage);
 
 function UpdatePassword() {
   const [passwordMatchError, setPasswordMatchError] = useState("");
@@ -57,7 +63,7 @@ function UpdatePassword() {
     // If passwords match, proceed with the update
     try {
       const response = await axios.post(
-        "https://roommate-finder-theta.vercel.app/auth/update-password",
+        `${process.env.REACT_APP_SERVER_URL}/auth/update-password`,
         {
           username: email,
           password: password,

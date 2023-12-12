@@ -6,6 +6,13 @@ import "./Reset.css";
 import Header from "../../Components/Header/Header";
 import { Link } from "react-router-dom";
 
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const passwordResetPage = '/resetPassword';
+Hotjar.stateChange(passwordResetPage);
+
 function Reset() {
   const [email, setEmail] = useState("");
   const emailRegex = /^[A-Za-z0-9._%+-]+@vitstudent.ac.in$/;
@@ -20,7 +27,7 @@ function Reset() {
 
     try {
       const response = await axios.post(
-        "https://roommate-finder-theta.vercel.app/auth/password-reset",
+        `${process.env.REACT_APP_SERVER_URL}/auth/password-reset`,
         {
           username: email,
         }
@@ -33,6 +40,7 @@ function Reset() {
         toast.success(response.data.message);
       }
     } catch (error) {
+      toast.info(error.response.data.message);
       console.error(error);
     }
   };

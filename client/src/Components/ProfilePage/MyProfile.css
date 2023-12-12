@@ -314,6 +314,7 @@ form {
   align-items: flex-end;
   font-weight: bolder;
   font-size: 24px;
+  white-space: nowrap;
 }
 .cards {
   place-items: center;
@@ -392,4 +393,46 @@ form {
   top: 0;
   left: 0;
   background: rgba(255, 255, 255, 0.8);
+}
+.form-section-6{
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+.form-section-6 input {
+  margin-bottom: 4px;
+  background-color: #d9d9d9;
+  border-radius: 8px;
+  height: 3rem;
+}
+
+.form-section-6 label {
+  margin-bottom: 4px;
+}
+
+.handlereset{
+  color: #000000;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.add-button-inner {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+  margin-bottom: 10px;
+}
+
+.add-button-inner.active {
+  background-color: #000;
+  color: #fff;
+}
+
+.add-button-inner:active {
+  background-color: #333; /* Darker color when button is pressed */
 }

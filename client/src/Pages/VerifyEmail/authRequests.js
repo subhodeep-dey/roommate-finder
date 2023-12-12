@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const verifyEmail = async (emailToken) => {
   try {
-    const response = await axios.post('https://roommate-finder-theta.vercel.app/auth/verify-email', {
+    const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/verify-email`, {
       emailToken: emailToken
     });
 

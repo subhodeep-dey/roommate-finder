@@ -7,15 +7,29 @@ import Footer from "../Footer/Footer";
 import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
 import "./ChatComponent.css";
+import secureLocalStorage from "react-secure-storage";
+
+import Hotjar from '@hotjar/browser';
+const siteId = 3765543;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
+const chatPage = '/chat';
+Hotjar.stateChange(chatPage);
 
 const ChatComponent = () => {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
-  const profileData = JSON.parse(localStorage.getItem("profile"));
+  const profileData = JSON.parse(secureLocalStorage.getItem("profile"));
   const location = useLocation();
   const navigate = useNavigate();
   const [isChatLoaded, setIsChatLoaded] = useState(false);
   const [scriptAppended, setScriptAppended] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  Hotjar.identify(profileData?.user?.username, {
+    first_name: profileData?.user?.firstname,
+    last_name: profileData?.user?.lastname,
+    gender: profileData?.user?.gender
+  });
 
   const loadChatScript = () => {
     const script = document.createElement("script");

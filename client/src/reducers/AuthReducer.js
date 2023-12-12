@@ -1,9 +1,17 @@
+import secureLocalStorage from "react-secure-storage";
+import setAuthToken from "../actions/setAuthToken";
+
 const authReducer = (state = { authData: null, loading: false, error: false, updateLoading: false },action) => {
   switch (action.type) {
     case "AUTH_START":
       return {...state, loading: true, error: false };
     case "AUTH_SUCCESS":
-      localStorage.setItem("profile", JSON.stringify({...action?.data}));
+      secureLocalStorage.setItem("profile", JSON.stringify({...action?.data}));
+      const profile = JSON.parse(secureLocalStorage.getItem('profile'));
+      const token = profile?.token;
+      setAuthToken(token);
+      console.log("token: ", token);
+      console.log("profile: ", profile);
 
       return {...state,  authData: action.data, loading: false, error: false };
 
@@ -14,7 +22,10 @@ const authReducer = (state = { authData: null, loading: false, error: false, upd
     case "UPDATING_START":
       return {...state, updateLoading: true , error: false}
     case "UPDATING_SUCCESS":
-      localStorage.setItem("profile", JSON.stringify({...action?.data}));
+      secureLocalStorage.setItem("profile", JSON.stringify({...action?.data}));
+      setAuthToken(token);
+      console.log("token2: ", token);
+      console.log("profile2: ", profile);
       return {...state, authData: action.data, updateLoading: false, error: false}
     
     
@@ -24,7 +35,7 @@ const authReducer = (state = { authData: null, loading: false, error: false, upd
 
 
     case "LOG_OUT":
-      localStorage.clear();
+      secureLocalStorage.clear();
       return {...state,  authData: null, loading: false, error: false, updateLoading: false }
 
 
